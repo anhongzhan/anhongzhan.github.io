@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+  <meta charset="utf-8">
+  
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="format-detection" content="telephone=no,email=no,adress=no">
+  <!-- Color theme for statusbar -->
+  <meta name="theme-color" content="#000000" />
+  <!-- 强制页面在当前窗口以独立页面显示,防止别人在框架里调用页面 -->
+  <meta http-equiv="window-target" content="_top" />
+  
+  
+  <title>MIT6828-lab1 | Hexo</title>
+  <meta name="description" content="MIT 6.828 Lab1MIT6.828 Lab1 Part2 pointers实验中有一部分要求我们复习C语言基础，主要是指针方面的知识：  我们需要做的工作就是运行官方所给的pointers.c文件，然后弄明白每次数据a中的元素都是什么 12345678910111213141516171819202122232425262728293031323334353637383940414243">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MIT6828-lab1">
+<meta property="og:url" content="http://anhongzhan.github.io/2021/03/12/mit6828-lab1/index.html">
+<meta property="og:site_name" content="Anhongzhan">
+<meta property="og:description" content="MIT 6.828 Lab1MIT6.828 Lab1 Part2 pointers实验中有一部分要求我们复习C语言基础，主要是指针方面的知识：  我们需要做的工作就是运行官方所给的pointers.c文件，然后弄明白每次数据a中的元素都是什么 12345678910111213141516171819202122232425262728293031323334353637383940414243">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://anhongzhan.github.io/2021/03/12/mit6828-lab1/MIT6.828-Lab1-pointers-1.png">
+<meta property="og:image" content="http://anhongzhan.github.io/2021/03/12/mit6828-lab1/MIT6.828-Lab1-pointers-2.png">
+<meta property="og:image" content="http://anhongzhan.github.io/2021/03/12/mit6828-lab1/MIT6.828-Lab1-pointers-3.png">
+<meta property="og:image" content="http://anhongzhan.github.io/2021/03/12/mit6828-lab1/MIT6.828-Lab1-pointers-4.png">
+<meta property="og:image" content="http://anhongzhan.github.io/2021/03/12/mit6828-lab1/MIT6-828-Lab1-Part3-1.png">
+<meta property="og:image" content="http://anhongzhan.github.io/2021/03/12/mit6828-lab1/MIT6-828-Lab1-Part3-2.png">
+<meta property="og:image" content="http://anhongzhan.github.io/2021/03/12/mit6828-lab1/MIT6-828-Lab1-Part3-3.png">
+<meta property="og:image" content="http://anhongzhan.github.io/2021/03/12/mit6828-lab1/MIT6-828-Lab1-Part3-4.png">
+<meta property="og:image" content="http://anhongzhan.github.io/2021/03/12/mit6828-lab1/Lab1-Part3-5.png">
+<meta property="og:image" content="http://anhongzhan.github.io/2021/03/12/mit6828-lab1/Lab1-Part3-6.png">
+<meta property="og:image" content="http://anhongzhan.github.io/2021/03/12/mit6828-lab1/Lab1-Part3-7.png">
+<meta property="article:published_time" content="2021-03-12T05:06:14.000Z">
+<meta property="article:modified_time" content="2021-03-12T05:07:00.531Z">
+<meta property="article:author" content="Anhongzhan">
+<meta property="article:tag" content="Operating System">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://anhongzhan.github.io/2021/03/12/mit6828-lab1/MIT6.828-Lab1-pointers-1.png">
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://anhongzhan.github.io/2021/03/12/mit6828-lab1/index.html">
+  
+    <link rel="alternate" href="/atom.xml" title="Anhongzhan" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png" type="image/x-icon">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+  
+  
+  
+<meta name="generator" content="Hexo 5.3.0"></head>
+
+
+<body class="main-center" itemscope itemtype="http://schema.org/WebPage">
+  <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+  <div class="slimContent">
+    <div class="navbar-header">
+      
+      
+      <div class="profile-block text-center">
+        <a id="avatar" href="https://github.com" target="_blank">
+          <img class="img-circle img-rotate" src="/images/avatar.jpg" width="200" height="200">
+        </a>
+        <h2 id="name" class="hidden-xs hidden-sm">Anhongzhan</h2>
+        <h3 id="title" class="hidden-xs hidden-sm hidden-md">Student</h3>
+        <small id="location" class="text-muted hidden-xs hidden-sm"><i class="icon icon-map-marker"></i> tianjin, China</small>
+      </div>
+      
+      <div class="search" id="search-form-wrap">
+
+    <form class="search-form sidebar-form">
+        <div class="input-group">
+            <input type="text" class="search-form-input form-control" placeholder="搜索" />
+            <span class="input-group-btn">
+                <button type="submit" class="search-form-submit btn btn-flat" onclick="return false;"><i class="icon icon-search"></i></button>
+            </span>
+        </div>
+    </form>
+    <div class="ins-search">
+  <div class="ins-search-mask"></div>
+  <div class="ins-search-container">
+    <div class="ins-input-wrapper">
+      <input type="text" class="ins-search-input" placeholder="想要查找什么..." x-webkit-speech />
+      <button type="button" class="close ins-close ins-selectable" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+    </div>
+    <div class="ins-section-wrapper">
+      <div class="ins-section-container"></div>
+    </div>
+  </div>
+</div>
+
+
+</div>
+      <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <nav id="main-navbar" class="collapse navbar-collapse" itemscope itemtype="http://schema.org/SiteNavigationElement" role="navigation">
+      <ul class="nav navbar-nav main-nav ">
+        
+        
+        <li class="menu-item menu-item-home">
+          <a href="/.">
+            
+            <i class="icon icon-home-fill"></i>
+            
+            <span class="menu-title">首页</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives">
+            
+            <i class="icon icon-archives-fill"></i>
+            
+            <span class="menu-title">归档</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories">
+            
+            <i class="icon icon-folder"></i>
+            
+            <span class="menu-title">分类</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags">
+            
+            <i class="icon icon-tags"></i>
+            
+            <span class="menu-title">标签</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-repository">
+          <a href="/repository">
+            
+            <i class="icon icon-project"></i>
+            
+            <span class="menu-title">项目</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-books">
+          <a href="/books">
+            
+            <i class="icon icon-book-fill"></i>
+            
+            <span class="menu-title">书单</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-links">
+          <a href="/links">
+            
+            <i class="icon icon-friendship"></i>
+            
+            <span class="menu-title">友链</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about">
+            
+            <i class="icon icon-cup-fill"></i>
+            
+            <span class="menu-title">关于</span>
+          </a>
+        </li>
+        
+      </ul>
+      
+	
+    <ul class="social-links">
+    	
+        <li><a href="/atom.xml" target="_blank" title="Rss" data-toggle=tooltip data-placement=top><i class="icon icon-rss"></i></a></li>
+        
+    </ul>
+
+    </nav>
+  </div>
+</header>
+
+  
+    <aside class="sidebar" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    
+      <div class="widget">
+    <h3 class="widget-title">公告</h3>
+    <div class="widget-body">
+        <div id="board">
+            <div class="content">
+                <p>欢迎交流与分享经验!</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget-body">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%88%B7%E9%A2%98%E7%AC%94%E8%AE%B0/">刷题笔记</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">学习笔记</a><span class="category-list-count">6</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">标签</h3>
+    <div class="widget-body">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Operating-System/" rel="tag">Operating System</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/database/" rel="tag">database</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/leetcode/" rel="tag">leetcode</a><span class="tag-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget-body tagcloud">
+      <a href="/tags/Operating-System/" style="font-size: 14px;">Operating System</a> <a href="/tags/database/" style="font-size: 14px;">database</a> <a href="/tags/leetcode/" style="font-size: 13px;">leetcode</a>
+    </div>
+  </div>
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget-body">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">八月 2021</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">五月 2021</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">三月 2021</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">二月 2021</a><span class="archive-list-count">2</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget-body">
+      <ul class="recent-post-list list-unstyled no-thumbnail">
+        
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">学习笔记</a>
+              </p>
+              <p class="item-title">
+                <a href="/2021/08/29/mit6828-lab2-detectmemory/" class="title">MIT6828-lab2-detectmemory</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2021-08-29T02:20:20.000Z" itemprop="datePublished">2021-08-29</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">学习笔记</a>
+              </p>
+              <p class="item-title">
+                <a href="/2021/05/16/mit6828-bootxv6/" class="title">MIT6828-bootxv6</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2021-05-16T02:40:36.000Z" itemprop="datePublished">2021-05-16</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">学习笔记</a>
+              </p>
+              <p class="item-title">
+                <a href="/2021/03/12/mit6828-lab1/" class="title">MIT6828-lab1</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2021-03-12T05:06:14.000Z" itemprop="datePublished">2021-03-12</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/%E5%88%B7%E9%A2%98%E7%AC%94%E8%AE%B0/">刷题笔记</a>
+              </p>
+              <p class="item-title">
+                <a href="/2021/03/07/shua-ti-xiao-bi-ji-01/" class="title">刷题小笔记01</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2021-03-07T12:30:38.000Z" itemprop="datePublished">2021-03-07</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">学习笔记</a>
+              </p>
+              <p class="item-title">
+                <a href="/2021/03/03/shu-ju-ku-xi-tong-03/" class="title">数据库系统03</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2021-03-03T05:15:01.000Z" itemprop="datePublished">2021-03-03</time>
+              </p>
+            </div>
+          </li>
+          
+      </ul>
+    </div>
+  </div>
+  
+
+    
+  </div>
+</aside>
+
+  
+  
+<main class="main" role="main">
+  <div class="content">
+  <article id="post-MIT6828-lab1" class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+    
+    <div class="article-header">
+      
+        
+  
+    <h1 class="article-title" itemprop="name">
+      MIT6828-lab1
+    </h1>
+  
+
+      
+      <div class="article-meta">
+        <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/2021/03/12/mit6828-lab1/" class="article-date">
+	  <time datetime="2021-03-12T05:06:14.000Z" itemprop="datePublished">2021-03-12</time>
+	</a>
+</span>
+        
+  <span class="article-category">
+    <i class="icon icon-folder"></i>
+    <a class="article-category-link" href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">学习笔记</a>
+  </span>
+
+        
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>
+	<a class="article-tag-link-link" href="/tags/Operating-System/" rel="tag">Operating System</a>
+  </span>
+
+
+        
+
+        <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2021/03/12/mit6828-lab1/#comments" class="article-comment-link">评论</a></span>
+        
+      </div>
+    </div>
+    <div class="article-entry marked-body" itemprop="articleBody">
+      
+        <h1 id="MIT-6-828-Lab1"><a href="#MIT-6-828-Lab1" class="headerlink" title="MIT 6.828 Lab1"></a>MIT 6.828 Lab1</h1><h2 id="MIT6-828-Lab1-Part2-pointers"><a href="#MIT6-828-Lab1-Part2-pointers" class="headerlink" title="MIT6.828 Lab1 Part2 pointers"></a><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1qz4y167xr">MIT6.828 Lab1 Part2 pointers</a></h2><p>实验中有一部分要求我们复习C语言基础，主要是指针方面的知识：</p>
+<p><img src="MIT6.828-Lab1-pointers-1.png"></p>
+<p>我们需要做的工作就是运行官方所给的pointers.c文件，然后弄明白每次数据a中的元素都是什么</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#include &lt;stdio.h&gt;</span></span><br><span class="line"><span class="comment">#include &lt;stdlib.h&gt;</span></span><br><span class="line"></span><br><span class="line">void f(void)</span><br><span class="line">&#123;</span><br><span class="line">   int a[4];</span><br><span class="line">   int *b = malloc(16);</span><br><span class="line">   int *c;</span><br><span class="line">   int i;</span><br><span class="line">	</span><br><span class="line">   <span class="built_in">printf</span>(<span class="string">&quot;1: a = %p, b = %p, c = %p\n&quot;</span>, a, b, c);</span><br><span class="line">	</span><br><span class="line">   c = a;</span><br><span class="line">   <span class="keyword">for</span> (i = 0; i &lt; 4; i++)</span><br><span class="line">a[i] = 100 + i;</span><br><span class="line">   c[0] = 200;</span><br><span class="line">   <span class="built_in">printf</span>(<span class="string">&quot;2: a[0] = %d, a[1] = %d, a[2] = %d, a[3] = %d\n&quot;</span>,</span><br><span class="line">   a[0], a[1], a[2], a[3]);</span><br><span class="line">	</span><br><span class="line">   c[1] = 300;</span><br><span class="line">   *(c + 2) = 301;</span><br><span class="line">   3[c] = 302;</span><br><span class="line">   <span class="built_in">printf</span>(<span class="string">&quot;3: a[0] = %d, a[1] = %d, a[2] = %d, a[3] = %d\n&quot;</span>,</span><br><span class="line">   a[0], a[1], a[2], a[3]);</span><br><span class="line">	</span><br><span class="line">   c = c + 1;</span><br><span class="line">   *c = 400;</span><br><span class="line">   <span class="built_in">printf</span>(<span class="string">&quot;4: a[0] = %d, a[1] = %d, a[2] = %d, a[3] = %d\n&quot;</span>,</span><br><span class="line">   a[0], a[1], a[2], a[3]);</span><br><span class="line">	</span><br><span class="line">   c = (int *) ((char *) c + 1);</span><br><span class="line">   *c = 500;</span><br><span class="line">   <span class="built_in">printf</span>(<span class="string">&quot;5: a[0] = %d, a[1] = %d, a[2] = %d, a[3] = %d\n&quot;</span>,</span><br><span class="line">   a[0], a[1], a[2], a[3]);</span><br><span class="line">	</span><br><span class="line">   b = (int *) a + 1;</span><br><span class="line">   c = (int *) ((char *) a + 1);</span><br><span class="line">   <span class="built_in">printf</span>(<span class="string">&quot;6: a = %p, b = %p, c = %p\n&quot;</span>, a, b, c);</span><br><span class="line">&#125;</span><br><span class="line">	</span><br><span class="line">int</span><br><span class="line">main(int ac, char **av)</span><br><span class="line">&#123;</span><br><span class="line">   	f();</span><br><span class="line">   	<span class="built_in">return</span> 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>首先看一下运行结果，然后逐句分析一下：</p>
+<p><img src="MIT6.828-Lab1-pointers-2.png" alt="pointers.c运行结果"></p>
+<p>代码首先定义了四个变量，然后打印前三个变量的地址</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">int a[4];</span><br><span class="line">int *b = malloc(16);</span><br><span class="line">int *c;</span><br><span class="line">int i;</span><br><span class="line"><span class="built_in">printf</span>(<span class="string">&quot;1: a = %p, b = %p, c = %p\n&quot;</span>, a, b, c);</span><br></pre></td></tr></table></figure>
+<p>系统在分配地址的时候有其自己的算法，所以这三个地址我们是无法预估的</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">c = a;</span><br><span class="line"><span class="keyword">for</span> (i = 0; i &lt; 4; i++)</span><br><span class="line">a[i] = 100 + i;</span><br><span class="line">c[0] = 200;</span><br><span class="line"><span class="built_in">printf</span>(<span class="string">&quot;2: a[0] = %d, a[1] = %d, a[2] = %d, a[3] = %d\n&quot;</span>,</span><br><span class="line">  			a[0], a[1], a[2], a[3]);</span><br></pre></td></tr></table></figure>
+<p>第二部分将a的地址赋值给c，此时对c和a的操作都相当于对a的操作，所以打印a数组的时候会显示    </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">200 101 102 103</span><br></pre></td></tr></table></figure>
+<p>接下来第三部分    </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">c[1] = 300;`</span><br><span class="line">*(c + 2) = 301;`</span><br><span class="line">3[c] = 302;`</span><br><span class="line"><span class="built_in">printf</span>(<span class="string">&quot;3: a[0] = %d, a[1] = %d, a[2] = %d, a[3] = %d\n&quot;</span>,</span><br><span class="line">  			a[0], a[1], a[2], a[3]);</span><br></pre></td></tr></table></figure>
+<p>这部分考察的是寻址方式，这部分可以参考csapp（深入理解计算机系统）的第三章121页，里面讲了寻址方式</p>
+<p><img src="MIT6.828-Lab1-pointers-3.png" alt="寻址方式">    </p>
+<p>实际操作都是对于数据a的操作，所以打印出的内容为</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">200 300 301 302</span><br></pre></td></tr></table></figure>
+<p>再接着：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">c = c + 1;</span><br><span class="line">*c = 400;</span><br><span class="line"><span class="built_in">printf</span>(<span class="string">&quot;4: a[0] = %d, a[1] = %d, a[2] = %d, a[3] = %d\n&quot;</span>,</span><br><span class="line">  			a[0], a[1], a[2], a[3]);</span><br></pre></td></tr></table></figure>
+<p>我们都知道，c是一个<code>int *</code>型的指针变量,所以执行<code>c=c+1</code>就相当于c的地址向后移位一个整型数字的大小，所以此时c所指向的地址为a[1]的地址，对c的操作就相当于对a[1]的操作，所以第四次打印较第三次来说只有a[1]的值发生了变化</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">200 400 301 302	</span><br></pre></td></tr></table></figure>
+<p>然后是第五次打印</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">c = (int *) ((char *) c + 1);</span><br><span class="line">*c = 500;</span><br><span class="line"><span class="built_in">printf</span>(<span class="string">&quot;5: a[0] = %d, a[1] = %d, a[2] = %d, a[3] = %d\n&quot;</span>,</span><br><span class="line">  			a[0], a[1], a[2], a[3]);</span><br></pre></td></tr></table></figure>
+<p>这次非常特别的将c的地址转换成字符型加一然后又转换成整型，此时c指向的地址即不是a[1]又不是a[2]，而是a[1]和a[2]之间的位置，在这个时候写入500，那么肯定会导致a[1] a[2]的值都发生变化，如下图所示：</p>
+<p><img src="MIT6.828-Lab1-pointers-4.png"></p>
+<p>首先观察3和4，我们需要知道的是我们的编译环境是32位的，所以一个整数占32位，然后是该系统采用小端模式，高地址在前，低地址在后，所以我们在写入数据的时候也是从高地址写入低地址</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">500用十六进制表示为：0x000001F4</span><br></pre></td></tr></table></figure>
+<p>c的地址原来指向a[1]，向后移位一个字符后则指向<code>$a[1]+8</code>bit大小，所以向C写入500时我们要将前8位写入a[2]的后8位，把500的后24位写入a[1]的前24位，如上图所示，所以写入后显示如下数字<br>：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">200 128144 256 302</span><br></pre></td></tr></table></figure>
+<p>最后一次打印，有了前面的介绍我们可以知道b的地址在a[0]的地址向后移位一个整型的大小，即32位，而c的位置为a[0]向后移位一个字符型的大小，8位。打印的内容如下所示：    </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">0061FEF4  0061FEF8  0061FEF5</span><br></pre></td></tr></table></figure>
+<p>其他具体的介绍也可以参考<a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1qz4y167xr">视频链接</a></p>
+<h2 id="MIT6-828-Lab1-Part3-The-Kernel"><a href="#MIT6-828-Lab1-Part3-The-Kernel" class="headerlink" title="MIT6.828 Lab1 Part3:The Kernel"></a>MIT6.828 Lab1 Part3:The Kernel</h2><h3 id="Exercise7"><a href="#Exercise7" class="headerlink" title="Exercise7"></a><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1DK4y1W7kB">Exercise7</a></h3><p><img src="MIT6-828-Lab1-Part3-1.png"></p>
+<p>第一部分与虚拟内存映射有关联，主要表述的内容为：</p>
+<ol>
+<li>我们的操作系统使用了4MB的物理内存</li>
+<li>观察kern/entry.s文件可以得到，设置CR0_PG标志位之后就可以进行虚拟内存映射</li>
+<li>具体的映射方式为高地址0xf0000000 - 0xf0400000的4MB物理地址映射到0x00000000 - 0x00400000，物理地址0x00000000~0x00400000依旧映射到0x00000000 - 0x00400000</li>
+</ol>
+<p>要求我们验证CR0_PG标志位设置前后0x100000与0xf0100000两处物理地址存储的内容：</p>
+<p>分析一下，根据我们的映射方式，0xf0100000与0x100000对应一个地址，所以在进行映射之前两者对应的内存不同，映射之后对应的内存相同</p>
+<p>entry.s中有一句<br>    <code>movl %eax, %cr0</code></p>
+<p>此句的作用就是设置CRO_PG，所以我们使用qemu和gdb定位到此句，查看执行前后两段内存中对应的内容即可</p>
+<p>下面开始进行操作：</p>
+<p>首先我们需要找到上面的代码，我们的代码在执行过bootmain之后跳转到entry函数的执行，所以我们只需要在bootmain的最后一行一句一句向后执行就能找到</p>
+<p><img src="MIT6-828-Lab1-Part3-2.png"></p>
+<p>我们可以看到，该代码在0x00100025，此时是不能进行地址映射的，所以查看内存如下：</p>
+<p><img src="MIT6-828-Lab1-Part3-3.png"></p>
+<p>可以看到两个位置所存储的内容不同，使用<code>si</code>指令向下执行之后再次查看内存</p>
+<p><img src="MIT6-828-Lab1-Part3-4.png"></p>
+<p>可以看到设置好CR0_PG之后确实可以进行地址映射</p>
+<h3 id="Exercise-8"><a href="#Exercise-8" class="headerlink" title="Exercise 8"></a>Exercise 8</h3><blockquote>
+<p>Most people take functions like printf() for granted, sometimes even thinking of them as “primitives” of the C language. But in an OS kernel, we have to implement all I/O ourselves.</p>
+</blockquote>
+<blockquote>
+<p>Read through kern/printf.c, lib/printfmt.c, and kern/console.c, and make sure you understand their relationship. It will become clear in later labs why printfmt.c is located in the separate lib directory.</p>
+</blockquote>
+<p>首先我们要了解三个与打印相关的文件，分别为 \kern\printf.c，\kern\console.c, \lib\printfmt.c<br>简单了解里面的函数调用关系之后我们发现printf.c与printfmt.c都是调用了console.c文件中的函数，所以我们先来看console.c</p>
+<p>这里我们主要关心的是被多次调用的cputchar函数</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">// `High<span class="string">&#x27;-level console I/O.  Used by readline and cprintf.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">void</span></span><br><span class="line"><span class="string">cputchar(int c)</span></span><br><span class="line"><span class="string">&#123;</span></span><br><span class="line"><span class="string">	cons_putc(c);</span></span><br><span class="line"><span class="string">&#125;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">// output a character to the console</span></span><br><span class="line"><span class="string">static void</span></span><br><span class="line"><span class="string">cons_putc(int c)</span></span><br><span class="line"><span class="string">&#123;</span></span><br><span class="line"><span class="string">	serial_putc(c);</span></span><br><span class="line"><span class="string">	lpt_putc(c);</span></span><br><span class="line"><span class="string">	cga_putc(c);</span></span><br><span class="line"><span class="string">&#125;</span></span><br></pre></td></tr></table></figure>
+<p>通过注释我们可以发现，cputchar()函数是控制台IO最高层的控制程序，所以它被另外两个文件所调用。再有就是cons_putc()函数的作用是向控制台，也就是计算机屏幕输出一个字符</p>
+<p>下面我们来具体看一下这三个函数：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#define COM1        0x3F8</span></span><br><span class="line"><span class="comment">#define COM_TX        0    // Out: Transmit buffer (DLAB=0)</span></span><br><span class="line"><span class="comment">#define COM_LSR        5    // In:    Line Status Register</span></span><br><span class="line"><span class="comment">#define COM_LSR_TXRDY    0x20    //   Transmit buffer avail</span></span><br><span class="line"></span><br><span class="line">static void serial_putc(int c)</span><br><span class="line">&#123;</span><br><span class="line">	int i;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span> (i = 0;</span><br><span class="line">	     !(inb(COM1 + COM_LSR) &amp; COM_LSR_TXRDY) &amp;&amp; i &lt; 12800;</span><br><span class="line">	     i++)</span><br><span class="line">		delay();</span><br><span class="line"></span><br><span class="line">	outb(COM1 + COM_TX, c);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>首先通过inb与outb函数我们可以知道这段程序是从一个端口读于一个字节的数据，然后写入另一个端口。<br>关于端口的内容我们可以查看<a target="_blank" rel="noopener" href="http://bochs.sourceforge.net/techspec/PORTS.LST">这里</a></p>
+<p><img src="Lab1-Part3-5.png"></p>
+<p><img src="Lab1-Part3-6.png"></p>
+<p>这里我们可以看到，我们从端口03FD读取字节，而该端口的bit5=1时说明此时这个寄存器为空，计算机可以向该寄存器发送数据，读取出的内容与0x20做与运算后再取反，此时就会退出循环，执行outb函数</p>
+<p>接下来：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">/***** Parallel port output code *****/</span><br><span class="line">// For information on PC parallel port programming, see the class References</span><br><span class="line">// page.</span><br><span class="line"></span><br><span class="line">static void</span><br><span class="line">lpt_putc(int c)</span><br><span class="line">&#123;</span><br><span class="line">	int i;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span> (i = 0; !(inb(0x378+1) &amp; 0x80) &amp;&amp; i &lt; 12800; i++)</span><br><span class="line">		delay();</span><br><span class="line">	outb(0x378+0, c);</span><br><span class="line">	outb(0x378+2, 0x08|0x04|0x01);</span><br><span class="line">	outb(0x378+2, 0x08);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这个函数的作用就是将字符输出给并口设备，至于为什么要做些操作，可能就是计算机设计者的问题了，本人并不清楚</p>
+<blockquote>
+<p>0378-037A —-    parallel printer port, same as 0278 and 03BC<br>0378    w    data port<br>0379    r/w    status port<br>037A    r/w    control port</p>
+</blockquote>
+<p>可以看到，0x0379是状态端口，通过端口数据可以知道是否可以写入，然后0x0378写入数据，0x037A端口写入一些控制</p>
+<p>最后一个cga_putc函数</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line">static void cga_putc(int c)</span><br><span class="line">&#123;</span><br><span class="line">	// <span class="keyword">if</span> no attribute given, <span class="keyword">then</span> use black on white</span><br><span class="line">	<span class="keyword">if</span> (!(c &amp; ~0xFF))</span><br><span class="line">		c |= 0x0700;</span><br><span class="line"></span><br><span class="line">	switch (c &amp; 0xff) &#123;</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;\b&#x27;</span>:</span><br><span class="line">		<span class="keyword">if</span> (crt_pos &gt; 0) &#123;</span><br><span class="line">			crt_pos--;</span><br><span class="line">			crt_buf[crt_pos] = (c &amp; ~0xff) | <span class="string">&#x27; &#x27;</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="built_in">break</span>;</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;\n&#x27;</span>:</span><br><span class="line">		crt_pos += CRT_COLS;</span><br><span class="line">		/* fallthru */</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;\r&#x27;</span>:</span><br><span class="line">		crt_pos -= (crt_pos % CRT_COLS);</span><br><span class="line">		<span class="built_in">break</span>;</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;\t&#x27;</span>:</span><br><span class="line">		cons_putc(<span class="string">&#x27; &#x27;</span>);</span><br><span class="line">		cons_putc(<span class="string">&#x27; &#x27;</span>);</span><br><span class="line">		cons_putc(<span class="string">&#x27; &#x27;</span>);</span><br><span class="line">		cons_putc(<span class="string">&#x27; &#x27;</span>);</span><br><span class="line">		cons_putc(<span class="string">&#x27; &#x27;</span>);</span><br><span class="line">		<span class="built_in">break</span>;</span><br><span class="line">	default:</span><br><span class="line">		crt_buf[crt_pos++] = c;		/* write the character */</span><br><span class="line">		<span class="built_in">break</span>;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	// What is the purpose of this?</span><br><span class="line">	<span class="keyword">if</span> (crt_pos &gt;= CRT_SIZE) &#123; //如果要打印的内容比CRT屏幕承受的范围大</span><br><span class="line">		int i;</span><br><span class="line"></span><br><span class="line">		//那么就上移一行，然后将最后一行全部涂黑</span><br><span class="line">		memmove(crt_buf, crt_buf + CRT_COLS, (CRT_SIZE - CRT_COLS) * sizeof(uint16_t));</span><br><span class="line">		<span class="keyword">for</span> (i = CRT_SIZE - CRT_COLS; i &lt; CRT_SIZE; i++)</span><br><span class="line">			crt_buf[i] = 0x0700 | <span class="string">&#x27; &#x27;</span>;</span><br><span class="line">		crt_pos -= CRT_COLS;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	/* move that little blinky thing */</span><br><span class="line">	outb(addr_6845, 14);</span><br><span class="line">	outb(addr_6845 + 1, crt_pos &gt;&gt; 8);</span><br><span class="line">	outb(addr_6845, 15);</span><br><span class="line">	outb(addr_6845 + 1, crt_pos);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>首先，cga是我们的屏幕设备名称，put是输出的意思，c是我们函数里面一直使用的那个变量，所以函数的意思就是向屏幕输出c</p>
+<p>但这里面的c并不是一个字符c，他是一个int型变量，占32位，每一位的作用如下所示：</p>
+<table>
+<thead>
+<tr>
+<th align="center">15 14 13 12</th>
+<th align="center">11 10 9 8</th>
+<th align="center">7 6 5 4 3 2 1</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">背景色</td>
+<td align="center">前景色</td>
+<td align="center">字符</td>
+</tr>
+</tbody></table>
+<p><img src="Lab1-Part3-7.png"></p>
+<p>所以该函数前几句的意思就是:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">// <span class="keyword">if</span> no attribute given, <span class="keyword">then</span> use black on white</span><br><span class="line"><span class="keyword">if</span> (!(c &amp; ~0xFF))</span><br><span class="line">	c |= 0x0700;</span><br></pre></td></tr></table></figure>
+<p>如果c=0x0000,那么就将c转换为0x0700,二进制表示为0000 0111 0000 0000</p>
+<p>说明显示背景为黑色，前景为白色，而字符0x00用ASCii码表示则为空，该函数的其余部分就是讨论c的类型以及不同的打印状态，这里我并没有仔细研究</p>
+<p>看完console.c之后我们来看printfmt.c,这个函数的作用就是</p>
+<blockquote>
+<p> Stripped-down primitive printf-style formatting routines,<br> used in common by printf, sprintf, fprintf, etc.<br> This code is also used by both the kernel and user programs.</p>
+</blockquote>
+<p>然后是printf.c</p>
+<blockquote>
+<p> Simple implementation of cprintf console output for the kernel,<br> based on printfmt() and the kernel console’s cputchar().</p>
+</blockquote>
+<p>接下来则要求我们完善printfmt.c中关于八进制%o的代码</p>
+<blockquote>
+<p>We have omitted a small fragment of code - the code necessary to print octal numbers using patterns of the form “%o”. Find and fill in this code fragment.</p>
+</blockquote>
+<p>如下所示：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">// (unsigned) octal</span><br><span class="line"><span class="keyword">case</span> <span class="string">&#x27;o&#x27;</span>:</span><br><span class="line">	putch(<span class="string">&#x27;0&#x27;</span>, putdat);</span><br><span class="line">	num = getuint(&amp;ap, lflag);</span><br><span class="line">	base = 8;</span><br><span class="line">	goto number;</span><br></pre></td></tr></table></figure>
+<p>这里面主要是模仿十进制的代码进行编写即可，其中getuint函数</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">// Get an unsigned int of various possible sizes from a varargs list,</span><br><span class="line">// depending on the lflag parameter.</span><br><span class="line">static unsigned long long</span><br><span class="line">getuint(va_list *ap, int lflag)</span><br><span class="line">&#123;</span><br><span class="line">	<span class="keyword">if</span> (lflag &gt;= 2)</span><br><span class="line">		<span class="built_in">return</span> va_arg(*ap, unsigned long long);</span><br><span class="line">	<span class="keyword">else</span> <span class="keyword">if</span> (lflag)</span><br><span class="line">		<span class="built_in">return</span> va_arg(*ap, unsigned long);</span><br><span class="line">	<span class="keyword">else</span></span><br><span class="line">		<span class="built_in">return</span> va_arg(*ap, unsigned int);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这个函数的作用就是获取一个不同长度的无符号数</p>
+<p>再往下就是一些练习题，我们一个个看</p>
+
+      
+    </div>
+    <div class="article-footer">
+      <blockquote class="mt-2x">
+  <ul class="post-copyright list-unstyled">
+    
+    <li class="post-copyright-link hidden-xs">
+      <strong>本文链接：</strong>
+      <a href="http://anhongzhan.github.io/2021/03/12/mit6828-lab1/" title="MIT6828-lab1" target="_blank" rel="external">http://anhongzhan.github.io/2021/03/12/mit6828-lab1/</a>
+    </li>
+    
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong> 本博客所有文章除特别声明外，均采用 <a href="http://creativecommons.org/licenses/by/4.0/deed.zh" target="_blank" rel="external">CC BY 4.0 CN协议</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+</blockquote>
+
+
+<div class="panel panel-default panel-badger">
+  <div class="panel-body">
+    <figure class="media">
+      <div class="media-left">
+        <a href="https://github.com" target="_blank" class="img-burn thumb-sm visible-lg">
+          <img src="/images/avatar.jpg" class="img-rounded w-full" alt="">
+        </a>
+      </div>
+      <div class="media-body">
+        <h3 class="media-heading"><a href="https://github.com" target="_blank"><span class="text-dark">Anhongzhan</span><small class="ml-1x">Student</small></a></h3>
+        <div>个人简介。</div>
+      </div>
+    </figure>
+  </div>
+</div>
+
+
+    </div>
+  </article>
+  
+    
+  <section id="comments">
+  	
+      <div id="vcomments"></div>
+    
+  </section>
+
+
+  
+</div>
+
+  <nav class="bar bar-footer clearfix" data-stick-bottom>
+  <div class="bar-inner">
+  
+  <ul class="pager pull-left">
+    
+    <li class="prev">
+      <a href="/2021/05/16/mit6828-bootxv6/" title="MIT6828-bootxv6"><i class="icon icon-angle-left" aria-hidden="true"></i><span>&nbsp;&nbsp;上一篇</span></a>
+    </li>
+    
+    
+    <li class="next">
+      <a href="/2021/03/07/shua-ti-xiao-bi-ji-01/" title="刷题小笔记01"><span>下一篇&nbsp;&nbsp;</span><i class="icon icon-angle-right" aria-hidden="true"></i></a>
+    </li>
+    
+    
+  </ul>
+  
+  
+  <!-- Button trigger modal -->
+  <button type="button" class="btn btn-fancy btn-donate pop-onhover bg-gradient-warning" data-toggle="modal" data-target="#donateModal"><span>赏</span></button>
+  <!-- <div class="wave-icon wave-icon-danger btn-donate" data-toggle="modal" data-target="#donateModal">
+    <div class="wave-circle"><span class="icon"><i class="icon icon-bill"></i></span></div>
+  </div> -->
+  
+  
+  <div class="bar-right">
+    
+    <div class="share-component" data-sites="weibo,qq,wechat,facebook,twitter" data-mobile-sites="weibo,qq,qzone"></div>
+    
+  </div>
+  </div>
+</nav>
+  
+<!-- Modal -->
+<div class="modal modal-center modal-small modal-xs-full fade" id="donateModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content donate">
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      <div class="modal-body">
+        <div class="donate-box">
+          <div class="donate-head">
+            <p>感谢您的支持，我会继续努力的!</p>
+          </div>
+          <div class="tab-content">
+            <div role="tabpanel" class="tab-pane fade active in" id="alipay">
+              <div class="donate-payimg">
+                <img src="/images/donate/alipayimg.png" alt="扫码支持" title="扫一扫" />
+              </div>
+              <p class="text-muted mv">扫码打赏，你说多少就多少</p>
+              <p class="text-grey">打开支付宝扫一扫，即可进行扫码打赏哦</p>
+            </div>
+            <div role="tabpanel" class="tab-pane fade" id="wechatpay">
+              <div class="donate-payimg">
+                <img src="/images/donate/wechatpayimg.png" alt="扫码支持" title="扫一扫" />
+              </div>
+              <p class="text-muted mv">扫码打赏，你说多少就多少</p>
+              <p class="text-grey">打开微信扫一扫，即可进行扫码打赏哦</p>
+            </div>
+          </div>
+          <div class="donate-footer">
+            <ul class="nav nav-tabs nav-justified" role="tablist">
+              <li role="presentation" class="active">
+                <a href="#alipay" id="alipay-tab" role="tab" data-toggle="tab" aria-controls="alipay" aria-expanded="true"><i class="icon icon-alipay"></i> 支付宝</a>
+              </li>
+              <li role="presentation" class="">
+                <a href="#wechatpay" role="tab" id="wechatpay-tab" data-toggle="tab" aria-controls="wechatpay" aria-expanded="false"><i class="icon icon-wepay"></i> 微信支付</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+</main>
+
+  <footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
+	
+	
+    <ul class="social-links">
+    	
+        <li><a href="/atom.xml" target="_blank" title="Rss" data-toggle=tooltip data-placement=top><i class="icon icon-rss"></i></a></li>
+        
+    </ul>
+
+    <div class="copyright">
+    	
+        <div class="publishby">
+        	Theme by <a href="https://github.com/cofess" target="_blank"> cofess </a>base on <a href="https://github.com/cofess/hexo-theme-pure" target="_blank">pure</a>.
+        </div>
+    </div>
+</footer>
+  <script src="//cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+<script>
+window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
+</script>
+
+<script src="/js/plugin.min.js"></script>
+
+
+<script src="/js/application.js"></script>
+
+
+    <script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+
+<script src="/js/insight.js"></script>
+
+
+
+
+
+
+   
+
+
+
+
+   
+    
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/valine"></script>
+  <script type="text/javascript">
+  var GUEST = ['nick', 'mail', 'link'];
+  var meta = 'nick,mail,link';
+  meta = meta.split(',').filter(function(item) {
+    return GUEST.indexOf(item) > -1;
+  });
+  new Valine({
+    el: '#vcomments',
+    verify: false,
+    notify: false,
+    appId: '',
+    appKey: '',
+    placeholder: 'Just go go',
+    avatar: 'mm',
+    meta: meta,
+    pageSize: '10' || 10,
+    visitor: false
+  });
+  </script>
+
+     
+
+
+
+
+
+
+
+</body>
+</html>
