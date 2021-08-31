@@ -17,25 +17,25 @@
   <meta http-equiv="window-target" content="_top" />
   
   
-  <title>MIT6828-bootxv6 | Hexo</title>
-  <meta name="description" content="MIT 6.828 HW:BOOT xv6Environment首先是环境配置问题 下载xv6:123456$ mkdir 6.828$ cd 6.828$ git clone git:&#x2F;&#x2F;github.com&#x2F;mit-pdos&#x2F;xv6-public.gitCloning into &amp;#x27;xv6-public&amp;#x27;......$接下来编译环境 make 可能会出现一下问题：123456">
+  <title>xv6-ch2-PageTable | Hexo</title>
+  <meta name="description" content="xv6 chapter2 Page Table本文章为阅读xv6手册所做的阅读笔记，手册如下 链接 Page Table 是操作系统控制内存的机制。页表允许xv6将不同进程的地址空间映射到一个单独的物理内存中，并且保护不同进程的内存。页表可以通过设置不同的等级来实现很多的小技巧。xv6主要使用页表来控制地址空间和保护内存。也会使用一些简单的页表技巧：吧相同的内存映射到几段空间中，将相同的内存不止一">
 <meta property="og:type" content="article">
-<meta property="og:title" content="MIT6828-bootxv6">
-<meta property="og:url" content="http://anhongzhan.github.io/2021/05/16/mit6828-bootxv6/index.html">
+<meta property="og:title" content="xv6-ch2-PageTable">
+<meta property="og:url" content="http://anhongzhan.github.io/2021/08/31/xv6-ch2-pagetable/index.html">
 <meta property="og:site_name" content="Anhongzhan">
-<meta property="og:description" content="MIT 6.828 HW:BOOT xv6Environment首先是环境配置问题 下载xv6:123456$ mkdir 6.828$ cd 6.828$ git clone git:&#x2F;&#x2F;github.com&#x2F;mit-pdos&#x2F;xv6-public.gitCloning into &amp;#x27;xv6-public&amp;#x27;......$接下来编译环境 make 可能会出现一下问题：123456">
+<meta property="og:description" content="xv6 chapter2 Page Table本文章为阅读xv6手册所做的阅读笔记，手册如下 链接 Page Table 是操作系统控制内存的机制。页表允许xv6将不同进程的地址空间映射到一个单独的物理内存中，并且保护不同进程的内存。页表可以通过设置不同的等级来实现很多的小技巧。xv6主要使用页表来控制地址空间和保护内存。也会使用一些简单的页表技巧：吧相同的内存映射到几段空间中，将相同的内存不止一">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://anhongzhan.github.io/2021/05/16/mit6828-bootxv6/register.png">
-<meta property="og:image" content="http://anhongzhan.github.io/2021/05/16/mit6828-bootxv6/stack.png">
-<meta property="og:image" content="http://anhongzhan.github.io/2021/05/16/mit6828-bootxv6/nextins.png">
-<meta property="article:published_time" content="2021-05-16T02:40:36.000Z">
-<meta property="article:modified_time" content="2021-08-31T08:26:01.199Z">
+<meta property="og:image" content="http://anhongzhan.github.io/2021/08/31/xv6-ch2-pagetable/寻址方式.png">
+<meta property="og:image" content="http://anhongzhan.github.io/2021/08/31/xv6-ch2-pagetable/PTflag.png">
+<meta property="og:image" content="http://anhongzhan.github.io/2021/08/31/xv6-ch2-pagetable/V2P.png">
+<meta property="article:published_time" content="2021-08-31T08:38:17.000Z">
+<meta property="article:modified_time" content="2021-08-31T08:51:09.410Z">
 <meta property="article:author" content="Anhongzhan">
-<meta property="article:tag" content="Operating System">
+<meta property="article:tag" content="xv6">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://anhongzhan.github.io/2021/05/16/mit6828-bootxv6/register.png">
+<meta name="twitter:image" content="http://anhongzhan.github.io/2021/08/31/xv6-ch2-pagetable/寻址方式.png">
   <!-- Canonical links -->
-  <link rel="canonical" href="http://anhongzhan.github.io/2021/05/16/mit6828-bootxv6/index.html">
+  <link rel="canonical" href="http://anhongzhan.github.io/2021/08/31/xv6-ch2-pagetable/index.html">
   
     <link rel="alternate" href="/atom.xml" title="Anhongzhan" type="application/atom+xml">
   
@@ -344,14 +344,14 @@
   
 <main class="main" role="main">
   <div class="content">
-  <article id="post-MIT6828-bootxv6" class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+  <article id="post-xv6-ch2-PageTable" class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
     
     <div class="article-header">
       
         
   
     <h1 class="article-title" itemprop="name">
-      MIT6828-bootxv6
+      xv6-ch2-PageTable
     </h1>
   
 
@@ -359,8 +359,8 @@
       <div class="article-meta">
         <span class="article-date">
     <i class="icon icon-calendar-check"></i>
-	<a href="/2021/05/16/mit6828-bootxv6/" class="article-date">
-	  <time datetime="2021-05-16T02:40:36.000Z" itemprop="datePublished">2021-05-16</time>
+	<a href="/2021/08/31/xv6-ch2-pagetable/" class="article-date">
+	  <time datetime="2021-08-31T08:38:17.000Z" itemprop="datePublished">2021-08-31</time>
 	</a>
 </span>
         
@@ -372,47 +372,46 @@
         
   <span class="article-tag">
     <i class="icon icon-tags"></i>
-	<a class="article-tag-link-link" href="/tags/Operating-System/" rel="tag">Operating System</a>
+	<a class="article-tag-link-link" href="/tags/xv6/" rel="tag">xv6</a>
   </span>
 
 
         
 
-        <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2021/05/16/mit6828-bootxv6/#comments" class="article-comment-link">评论</a></span>
+        <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2021/08/31/xv6-ch2-pagetable/#comments" class="article-comment-link">评论</a></span>
         
       </div>
     </div>
     <div class="article-entry marked-body" itemprop="articleBody">
       
-        <h1 id="MIT-6-828-HW-BOOT-xv6"><a href="#MIT-6-828-HW-BOOT-xv6" class="headerlink" title="MIT 6.828 HW:BOOT xv6"></a><a target="_blank" rel="noopener" href="https://pdos.csail.mit.edu/6.828/2018/homework/xv6-boot.html">MIT 6.828 HW:BOOT xv6</a></h1><h2 id="Environment"><a href="#Environment" class="headerlink" title="Environment"></a>Environment</h2><p>首先是环境配置问题</p>
-<p>下载xv6:<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">$ mkdir 6.828</span><br><span class="line">$ <span class="built_in">cd</span> 6.828</span><br><span class="line">$ git <span class="built_in">clone</span> git://github.com/mit-pdos/xv6-public.git</span><br><span class="line">Cloning into <span class="string">&#x27;xv6-public&#x27;</span>...</span><br><span class="line">...</span><br><span class="line">$</span><br></pre></td></tr></table></figure><br>接下来编译环境 <code>make</code></p>
-<p>可能会出现一下问题：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">warning: File <span class="string">&quot;~/Desktop/MIT6.828/6.828/xv6-public/.gdbinit&quot;</span> auto-loading has been declined by your `auto-load safe-path<span class="string">&#x27; set to &quot;$debugdir:$datadir/auto-load&quot;.</span></span><br><span class="line"><span class="string">To enable execution of this file add</span></span><br><span class="line"><span class="string">   add-auto-load-safe-path /home/anhongzhan/Desktop/MIT6.828/6.828/xv6-public/.gdbinit</span></span><br><span class="line"><span class="string">line to your configuration file &quot;/home/anhongzhan/.gdbinit&quot;.</span></span><br><span class="line"><span class="string">To completely disable this security protection add</span></span><br><span class="line"><span class="string">   set auto-load safe-path /</span></span><br><span class="line"><span class="string">line to your configuration file &quot;/home/ylong/.gdbinit&quot;.`</span></span><br></pre></td></tr></table></figure><br>解决办法:在系统提示的路径文件中添加上面一行<code>/home/anhongzhan/.gdbinit</code>，注意命名问题，我的用户名是<code>anhongzhan</code></p>
-<h2 id="Exercise-What-is-on-the-stack"><a href="#Exercise-What-is-on-the-stack" class="headerlink" title="Exercise: What is on the stack?"></a>Exercise: What is on the stack?</h2><blockquote>
-<p>Find the address of _start, the entry point of the kernel:</p>
-<p>$ nm kernel | grep _start<br>8010a48c D _binary_entryother_start<br>8010a460 D _binary_initcode_start<br>0010000c T _start<br>In this case, the address is 0010000c.</p>
-</blockquote>
-<p>该任务目的是为了检查<code>_start</code>开始时的栈顶的值</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">b * 0x10000c</span><br><span class="line">c</span><br></pre></td></tr></table></figure>
-<p>然后查看各寄存器的值，找到<code>$esp</code>，然后查看栈的数据</p>
-<p><img src="register.png" alt="各寄存器的值"></p>
-<p>找到<code>$esp</code>之后我们查看栈</p>
-<p><img src="stack.png" alt="栈值"></p>
-<blockquote>
-<p>问题：<br>Begin by restarting qemu and gdb, and set a break-point at 0x7c00, the start of the boot block (bootasm.S). Single step through the instructions (type si at the gdb prompt). Where in bootasm.S is the stack pointer initialized? (Single step until you see an instruction that moves a value into %esp, the register for the stack pointer.)<br>Single step through the call to bootmain; what is on the stack now?<br>What do the first assembly instructions of bootmain do to the stack? Look for bootmain in bootblock.asm.<br>Continue tracing via gdb (using breakpoints if necessary — see hint below) and look for the call that changes eip to 0x10000c. What does that call do to the stack? (Hint: Think about what this call is trying to accomplish in the boot sequence and try to identify this point in bootmain.c, and the corresponding instruction in the bootmain code in bootblock.asm. This might help you set suitable breakpoints to speed things up.)</p>
-</blockquote>
-<h2 id="解答"><a href="#解答" class="headerlink" title="解答"></a>解答</h2><h3 id="问题一：栈指针的初始值是什么？"><a href="#问题一：栈指针的初始值是什么？" class="headerlink" title="问题一：栈指针的初始值是什么？"></a>问题一：栈指针的初始值是什么？</h3><p>在地址0x7c00处设置断点，使用c命令运行至此，然后使用si指令逐条运行知道栈指针发生变化</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">(gdb) b *0x7c00</span><br><span class="line">Breakpoint 1 at 0x7c00</span><br><span class="line">(gdb) c</span><br><span class="line">Continuing.</span><br><span class="line">[   0:7c00] =&gt; 0x7c00:	cli    </span><br><span class="line">...</span><br><span class="line">(gdb) si</span><br><span class="line">=&gt; 0x7c35:	mov    %eax,%ds</span><br><span class="line">0x00007c35 <span class="keyword">in</span> ?? ()</span><br><span class="line">(gdb) si</span><br><span class="line">=&gt; 0x7c37:	mov    %eax,%es</span><br><span class="line">0x00007c37 <span class="keyword">in</span> ?? ()</span><br><span class="line">(gdb) si</span><br><span class="line">=&gt; 0x7c39:	mov    %eax,%ss</span><br><span class="line">0x00007c39 <span class="keyword">in</span> ?? ()</span><br><span class="line">(gdb) si</span><br><span class="line">=&gt; 0x7c3b:	mov    <span class="variable">$0x0</span>,%ax</span><br><span class="line">0x00007c3b <span class="keyword">in</span> ?? ()</span><br><span class="line">(gdb) si</span><br><span class="line">=&gt; 0x7c3f:	mov    %eax,%fs</span><br><span class="line">0x00007c3f <span class="keyword">in</span> ?? ()</span><br><span class="line">(gdb) si</span><br><span class="line">=&gt; 0x7c41:	mov    %eax,%gs</span><br><span class="line">0x00007c41 <span class="keyword">in</span> ?? ()</span><br><span class="line">(gdb) si</span><br><span class="line">=&gt; 0x7c43:	mov    <span class="variable">$0x7c00</span>,%esp</span><br><span class="line">0x00007c43 <span class="keyword">in</span> ?? ()	</span><br></pre></td></tr></table></figure>
-<p>可以看出，栈顶指针被初始化为<code>0x7c00</code></p>
-<h3 id="问题二：调用bootmain时栈中内容？"><a href="#问题二：调用bootmain时栈中内容？" class="headerlink" title="问题二：调用bootmain时栈中内容？"></a>问题二：调用bootmain时栈中内容？</h3><p>经查询<code>bootblock.asm</code>，bootmain函数调用地址在0x7d2a，我们使用断点然后continue直接跳转即可</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">(gdb) b * 0x7d2a</span><br><span class="line">Breakpoint 2 at 0x7d2a</span><br><span class="line">(gdb) c</span><br><span class="line">Continuing.</span><br><span class="line">=&gt; 0x7d2a:	push   %ebp</span><br><span class="line"></span><br><span class="line">Thread 1 hit Breakpoint 2, 0x00007d2a <span class="keyword">in</span> ?? ()</span><br><span class="line">(gdb) </span><br></pre></td></tr></table></figure>
-<p>然后查询寄存器地址，并查询栈中内容</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">(gdb) info reg</span><br><span class="line">eax            0x0	0</span><br><span class="line">ecx            0x0	0</span><br><span class="line">edx            0x80	128</span><br><span class="line">ebx            0x0	0</span><br><span class="line">esp            0x7bfc	0x7bfc</span><br><span class="line">ebp            0x0	0x0</span><br><span class="line">esi            0x0	0</span><br><span class="line">edi            0x0	0</span><br><span class="line">eip            0x7d2a	0x7d2a</span><br><span class="line">eflags         0x6	[ PF ]</span><br><span class="line">cs             0x8	8</span><br><span class="line">ss             0x10	16</span><br><span class="line">ds             0x10	16</span><br><span class="line">es             0x10	16</span><br><span class="line">fs             0x0	0</span><br><span class="line">gs             0x0	0</span><br><span class="line">(gdb) x /24x <span class="variable">$esp</span></span><br><span class="line">0x7bfc:	0x00007c4d	0x8ec031fa	0x8ec08ed8	0xa864e4d0</span><br><span class="line">0x7c0c:	0xb0fa7502	0xe464e6d1	0x7502a864	0xe6dfb0fa</span><br><span class="line">0x7c1c:	0x16010f60	0x200f7c78	0xc88366c0	0xc0220f01</span><br><span class="line">0x7c2c:	0x087c31ea	0x10b86600	0x8ed88e00	0x66d08ec0</span><br><span class="line">0x7c3c:	0x8e0000b8	0xbce88ee0	0x00007c00	0x0000dde8</span><br><span class="line">0x7c4c:	0x00b86600	0xc289668a	0xb866ef66	0xef668ae0</span><br></pre></td></tr></table></figure>
-<p>可以看到栈中最新保存的内容是0x7c4d，在<code>bootblock.asm</code>中我们可以看出，这是调用bootmain函数之后的下一条指令的地址</p>
-<p><img src="nextins.png" alt="下一条指令"></p>
-<h3 id="问题三：-bootmain函数执行的第一条指令是什么？"><a href="#问题三：-bootmain函数执行的第一条指令是什么？" class="headerlink" title="问题三： bootmain函数执行的第一条指令是什么？"></a>问题三： bootmain函数执行的第一条指令是什么？</h3><p>由问题二可知，第一条指令是push指令，将ebp寄存器中的内容入栈，最终目的是为了执行下面的redseg函数</p>
-<h3 id="问题四：-找到将eip寄存器修改为0x10000c的指令"><a href="#问题四：-找到将eip寄存器修改为0x10000c的指令" class="headerlink" title="问题四： 找到将eip寄存器修改为0x10000c的指令"></a>问题四： 找到将eip寄存器修改为0x10000c的指令</h3><p><code>bootblock.asm</code>文件中最后有一句</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">entry();</span><br><span class="line">   	7db2:	ff 15 18 00 01 00    	call   *0x10018</span><br></pre></td></tr></table></figure>
-<p>通过查询我们可以知道 0x10018中存放的内容就是0x10000c，eip中负责存储下一条指令的地址，所以该指令将eip寄存器修改为0x10000c</p>
+        <h1 id="xv6-chapter2-Page-Table"><a href="#xv6-chapter2-Page-Table" class="headerlink" title="xv6 chapter2 Page Table"></a>xv6 chapter2 Page Table</h1><p><strong>本文章为阅读xv6手册所做的阅读笔记，手册如下</strong></p>
+<p><a target="_blank" rel="noopener" href="https://pdos.csail.mit.edu/6.828/2018/xv6/book-rev11.pdf">链接</a></p>
+<p>Page Table 是操作系统控制内存的机制。页表允许xv6将不同进程的地址空间映射到一个单独的物理内存中，并且保护不同进程的内存。页表可以通过设置不同的等级来实现很多的小技巧。<br>xv6主要使用页表来控制地址空间和保护内存。也会使用一些简单的页表技巧：吧相同的内存映射到几段空间中，将相同的内存不止一次映射到一段地址空间（？？？这不是很正常吗），还有将一段用户栈映射到一个非映射的页表上去（意思是这段内存智能用作栈，其他内存无法映射过去，从而实现保护用户栈）。</p>
+<h2 id="Paging-hardware"><a href="#Paging-hardware" class="headerlink" title="Paging hardware"></a>Paging hardware</h2><p>x86的指令，无论是用户指令还是内核指令都操作虚拟内存(virtual address)。机器的RAM还有物理内存都使用物理地址映射。X86页表硬件连接着这两种内存，通过将每一段虚拟内存映射到物理内存上。<br>一个x86页表由2^20(1048576)个PTEs(Page Table enable)组成。每一个PTE包含20 bits 的PPN(physcial page number)和一些标志位。<br>页表硬件通过虚拟地址的高20位来索引页表找到PTE，然后使用PTE的高20位PPN替换地址的前20位以找到物理地址。这里只是一个笼统的说法，具体操作如下图所示：</p>
+<p><img src="寻址方式.png" alt=""></p>
+<p>我们使用虚拟地址的高10位找到PTE，然后通过PTE中的前20位找到对应页表(二级页表)。然后再使用虚拟地址的接下来的10位找到二级页表中对应的PTE，然后将二级页表中PTE的高20位替换虚拟地址的高20位，由此转换成物理地址。</p>
+<p>不难看出，页表在物理内存中以一个二级的树的形式存储。树根(root)是一个4096byte(=1024*32)的Page directory，这里面每一项都可以映射出一个页表，每个页表包含1024项32位的PTE。</p>
+<p>flag选项：每个PTE包含的flag位用于告诉页表硬件相关的虚拟地址如何被允许使用。（可读/可写 等等）。如下图所示：</p>
+<p><img src="PTflag.png" alt=""></p>
+<pre><code>PTE_P表明PTE是否存在，如果指置0，则该PTE不可用，会cause a fault
+PTE_W控制该页是否可写，写这个操作是由指令(instruction)完成的
+PTE_U控制用户程序(user programs)是否能够使用该页，如果置0，则之一内核可以使用该页
+
+The flags and all other page hardware related structures are defifined in mmu.h (0700).
+</code></pre><h2 id="Process-address-space"><a href="#Process-address-space" class="headerlink" title="Process address space"></a>Process address space</h2><p>通过entry创建的页表拥有足够的映射去满足内核的C代码运行。但是，main函数通过调用kvmalloc(1840)函数立即转换到了一个新的页表上去，因为内核为了描述进程地址空间而做了更加精巧的设计。</p>
+<p>每个进程(process)都有独立的页表，xv6规定页表的硬件随着进程的切换而切换页表。</p>
+<p>如下图所示，一个进程的用户内存开始于虚拟内存的0,并且包含至KERNBASE，每个进程允许拥有2GB的内存。</p>
+<p><img src="V2P.png" alt=""></p>
+<p>Layout of the virtual address space of a process and the layout of the physical address<br>space. Note that if a machine has more than 2 Gbyte of physical memory, xv6 can use only the memory<br>that fits between KERNBASE and 0xFE00000. <strong>这里面xv6的介绍和我们做实验的JOS可能有些出入</strong></p>
+<p>文件memlayout.h(0200)定义了xv6内存布局的内容，和虚拟地址转换成物理地址的宏(macros)</p>
+<p>当一个进程向xv6请求额外的内存时，xv6首先找到空闲的物理页提供存储(storage)，然后在进程的页表中增加PTEs用于指向该页。Xv6设置PTE_U,PTE_W,PTE_P。大多数进程使用不完整个用户地址空间；</p>
+<p>不同的进程页表将用户地址翻译到不同的物理内存页中，这样做可以保证每个进程有私有的用户空间(user memory).</p>
+<p>Xv6包含内核运行每一个进程页表的映射。这些映射都发生在KERNBASE上面的地址（参考上图）。Xv6把虚拟地址的KERNBASE:KERNBASE+PHYSTOP映射到 0:PHYSTOP。这样的映射的原因之一是内核可以使用他自己的指令和数据。另一个原因是内核有时候需要能够写入一个给出的物理内存的页，例如：创建页表页(page table pages)；让每一个物理页出现在可以预测到的虚拟内存中可以使这种操作更方便。</p>
+<p>一些使用内存映射IO的设备使用的物理内存从0xFE000000开始，故xv6页表包含一个对于内存设备的直接映射。因此，PHYSTOP必须小于2GB-&gt;16MB（这里16MB是指设备内存 device memory），但是依然没有解释清楚为什么PHYSTOP要小于2GB，<strong>JOS中kernbase设置为0xf0000000,正好是2G空间</strong>,原文如下：</p>
+<p>Book-rev11.pdf  page 32<br>Some devices that use memory-mapped I/O appear at physical addresses starting<br>at 0xFE000000, so xv6 page tables including a direct mapping for them. Thus,<br>PHYSTOP must be smaller than two gigabytes - 16 megabytes (for the device memory).</p>
+<p>Xv6不会在大于KERNBASE的内存上设置PTE_U，所以只有内核可以使用他们</p>
+<p>在调用system call或者interrupt的时候从用户代码切换到内核代码，这时我们掌握所有进程页表的映射会相当方便：这样的切换不需要页表的也换（只需要切换选择子等内容即可）。内核的大部分都不需要自己的页表；内核也经常会借用一些进程的页表。</p>
+<p>To review, xv6 ensures that each process can use only its own memory. And, each process sees its memory as having contiguous virtual addresses starting at zero, while<br>the process’s physical memory can be non-contiguous. xv6 implements the fifirst by setting the PTE_U bit only on PTEs of virtual addresses that refer to the process’s own<br>memory. It implements the second using the ability of page tables to translate successive virtual addresses to whatever physical pages happen to be allocated to the process</p>
 
       
     </div>
@@ -422,7 +421,7 @@
     
     <li class="post-copyright-link hidden-xs">
       <strong>本文链接：</strong>
-      <a href="http://anhongzhan.github.io/2021/05/16/mit6828-bootxv6/" title="MIT6828-bootxv6" target="_blank" rel="external">http://anhongzhan.github.io/2021/05/16/mit6828-bootxv6/</a>
+      <a href="http://anhongzhan.github.io/2021/08/31/xv6-ch2-pagetable/" title="xv6-ch2-PageTable" target="_blank" rel="external">http://anhongzhan.github.io/2021/08/31/xv6-ch2-pagetable/</a>
     </li>
     
     <li class="post-copyright-license">
@@ -468,13 +467,9 @@
   
   <ul class="pager pull-left">
     
-    <li class="prev">
-      <a href="/2021/08/29/mit6828-lab2-detectmemory/" title="MIT6828-lab2-detectmemory"><i class="icon icon-angle-left" aria-hidden="true"></i><span>&nbsp;&nbsp;上一篇</span></a>
-    </li>
-    
     
     <li class="next">
-      <a href="/2021/03/12/mit6828-lab1/" title="MIT6828-lab1"><span>下一篇&nbsp;&nbsp;</span><i class="icon icon-angle-right" aria-hidden="true"></i></a>
+      <a href="/2021/08/29/mit6828-lab2-detectmemory/" title="MIT6828-lab2-detectmemory"><span>下一篇&nbsp;&nbsp;</span><i class="icon icon-angle-right" aria-hidden="true"></i></a>
     </li>
     
     
