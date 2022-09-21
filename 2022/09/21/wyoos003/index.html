@@ -16,24 +16,26 @@
   <meta name="author" content="Anhongzhan">
   <meta name="keywords" content="">
   
-    <meta name="description" content="1、开始github 1.1、环境配置1sudo apt-get install g++ binutils libc6-dev-i386    1.2、对linker.ld的补充linker脚本是用来控制link过程的文件，文件中包含内容为linker的处理命令，主要用于描述输入文件到输出文件时各个内容的分步以及内存映射等 1234567891011121314151617181920212223">
+    <meta name="description" content="0、环境配置安装grub-legacy与xorriso，最后我们会将制作好的镜像放入虚拟机中运行，而不是在虚拟机中再安装一个虚拟机运行 但是安装grub-legacy时会发现报错了，原因应该是因为版本迭代问题导致的，最新的安装包名称应该是grub-efi-amd64 1sudo apt-get install grub-efi-amd64 xorriso  github 1、mykernel.is">
 <meta property="og:type" content="article">
-<meta property="og:title" content="从零开始的操作系统生活02-对Hello World的补充">
-<meta property="og:url" content="http://example.com/2022/09/20/wyoos002/index.html">
+<meta property="og:title" content="从零开始的操作系统生活03-镜像制作">
+<meta property="og:url" content="http://example.com/2022/09/21/wyoos003/index.html">
 <meta property="og:site_name" content="Anhongzhan的个人博客">
-<meta property="og:description" content="1、开始github 1.1、环境配置1sudo apt-get install g++ binutils libc6-dev-i386    1.2、对linker.ld的补充linker脚本是用来控制link过程的文件，文件中包含内容为linker的处理命令，主要用于描述输入文件到输出文件时各个内容的分步以及内存映射等 1234567891011121314151617181920212223">
+<meta property="og:description" content="0、环境配置安装grub-legacy与xorriso，最后我们会将制作好的镜像放入虚拟机中运行，而不是在虚拟机中再安装一个虚拟机运行 但是安装grub-legacy时会发现报错了，原因应该是因为版本迭代问题导致的，最新的安装包名称应该是grub-efi-amd64 1sudo apt-get install grub-efi-amd64 xorriso  github 1、mykernel.is">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://example.com/2022/09/20/wyoos002/%E8%BF%90%E8%A1%8C%E7%BB%93%E6%9E%9C.PNG">
-<meta property="article:published_time" content="2022-09-20T02:51:47.000Z">
-<meta property="article:modified_time" content="2022-09-21T08:49:55.377Z">
+<meta property="og:image" content="http://example.com/2022/09/21/wyoos003/newVirtual.PNG">
+<meta property="og:image" content="http://example.com/2022/09/21/wyoos003/open.png">
+<meta property="og:image" content="http://example.com/2022/09/21/wyoos003/result.png">
+<meta property="article:published_time" content="2022-09-21T08:45:44.000Z">
+<meta property="article:modified_time" content="2022-09-21T08:49:39.714Z">
 <meta property="article:author" content="Anhongzhan">
 <meta property="article:tag" content="wyoos">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="http://example.com/2022/09/20/wyoos002/%E8%BF%90%E8%A1%8C%E7%BB%93%E6%9E%9C.PNG">
+<meta name="twitter:image" content="http://example.com/2022/09/21/wyoos003/newVirtual.PNG">
   
   
   
-  <title>从零开始的操作系统生活02-对Hello World的补充 - Anhongzhan的个人博客</title>
+  <title>从零开始的操作系统生活03-镜像制作 - Anhongzhan的个人博客</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -215,7 +217,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="从零开始的操作系统生活02-对Hello World的补充"></span>
+            <span id="subtitle" data-typed-text="从零开始的操作系统生活03-镜像制作"></span>
           
         </div>
 
@@ -226,8 +228,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2022-09-20 10:51" pubdate>
-          2022年9月20日 上午
+        <time datetime="2022-09-21 16:45" pubdate>
+          2022年9月21日 下午
         </time>
       </span>
     
@@ -295,56 +297,59 @@
         <div id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">从零开始的操作系统生活02-对Hello World的补充</h1>
+            <h1 style="display: none">从零开始的操作系统生活03-镜像制作</h1>
             
             
               <div class="markdown-body">
                 
-                <h2 id="1、开始"><a href="#1、开始" class="headerlink" title="1、开始"></a>1、开始</h2><p><a target="_blank" rel="noopener" href="https://github.com/anhongzhan/wyoos/tree/master/002">github</a></p>
-<h3 id="1-1、环境配置"><a href="#1-1、环境配置" class="headerlink" title="1.1、环境配置"></a>1.1、环境配置</h3><figure class="highlight mipsasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs mipsasm">sudo apt-get <span class="hljs-keyword">install </span>g++ <span class="hljs-keyword">binutils </span>libc6-dev-i386<br></code></pre></td></tr></table></figure>
+                <h2 id="0、环境配置"><a href="#0、环境配置" class="headerlink" title="0、环境配置"></a>0、环境配置</h2><p>安装grub-legacy与xorriso，最后我们会将制作好的镜像放入虚拟机中运行，而不是在虚拟机中再安装一个虚拟机运行</p>
+<p>但是安装grub-legacy时会发现报错了，原因应该是因为版本迭代问题导致的，最新的安装包名称应该是grub-efi-amd64</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs routeros">sudo apt-<span class="hljs-built_in">get</span> install grub-efi-amd64 xorriso<br></code></pre></td></tr></table></figure>
 
+<p><a target="_blank" rel="noopener" href="https://github.com/anhongzhan/wyoos/tree/master/003">github</a></p>
+<h2 id="1、mykernel-iso"><a href="#1、mykernel-iso" class="headerlink" title="1、mykernel.iso"></a>1、mykernel.iso</h2><p>我们在使用虚拟机安装ubuntu系统的时候，选择的虚拟盘都是.iso后缀格式的，ISO文件是光盘的镜像文件，所有我们要做的事情就是将我们目前所写的内容转换成ISO镜像然后使用虚拟机打开即可</p>
+<p><a target="_blank" rel="noopener" href="https://www.gnu.org/software/grub/">GRUB</a>是一款multiboot loader，在链接中我们可以看到，grub-legacy已经不再维护了，所以我们需要安装替代的包，前面我们提过loader使用multiboot规范，multiboot规范对应的就是Multiboot loader</p>
+<p><a target="_blank" rel="noopener" href="https://www.gnu.org/software/xorriso/">xorriso</a>是一个用来创建和操作ISO 9660文件系统映像文件的工具，可以用来将影响文件烧录到DVD&#x2F;CD中</p>
+<p>接下来开始制作镜像</p>
+<p>我们在Makefile中添加如下语句：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs bash">mykernel.iso: mykernel.bin<br>	<span class="hljs-built_in">mkdir</span> iso<br>	<span class="hljs-built_in">mkdir</span> iso/boot<br>	<span class="hljs-built_in">mkdir</span> iso/boot/grub<br>	<span class="hljs-built_in">cp</span> $&lt; iso/boot/<br>	<span class="hljs-built_in">echo</span> <span class="hljs-string">&#x27;set timeout=0&#x27;</span> &gt;&gt; iso/boot/grub/grub.cfg<br>	<span class="hljs-built_in">echo</span> <span class="hljs-string">&#x27;set default=0&#x27;</span> &gt;&gt; iso/boot/grub/grub.cfg<br>	<span class="hljs-built_in">echo</span> <span class="hljs-string">&#x27;&#x27;</span> &gt;&gt; iso/boot/grub/grub.cfg<br>	<span class="hljs-built_in">echo</span> <span class="hljs-string">&#x27;menuentry &quot;My Operating System&quot; &#123;&#x27;</span> &gt;&gt; iso/boot/grub/grub.cfg<br>	<span class="hljs-built_in">echo</span> <span class="hljs-string">&#x27;	multiboot /boot/mykernel.bin&#x27;</span> &gt;&gt; iso/boot/grub/grub.cfg<br>	<span class="hljs-built_in">echo</span> <span class="hljs-string">&#x27;	boot&#x27;</span> &gt;&gt; iso/boot/grub/grub.cfg<br>	<span class="hljs-built_in">echo</span> <span class="hljs-string">&#x27;&#125;&#x27;</span> &gt;&gt; iso/boot/grub/grub.cfg<br>	grub-mkrescue --output=<span class="hljs-variable">$@</span> iso<br>	<span class="hljs-built_in">rm</span> -rf iso<br></code></pre></td></tr></table></figure>
 
+<p>前三句命令负责创建对应文件夹，**$&lt;**表示第一个依赖文件，也就是把mykernel.bin复制到&#x2F;iso&#x2F;boot&#x2F;文件夹中去</p>
+<p>grub是引导操作系统的程序，他会根据自己的配置文件去引导内核，这项配置文件就是grub.cfg</p>
+<p><em>set timeout&#x3D;0</em>是设置启动等待的时间，加入我们的电脑存在两个系统，设置timeout&#x3D;10，则进入系统之前会给我们10s的时间去选择进入哪一个系统</p>
+<p><em>set default&#x3D;0</em>表示设置默认进入的系统，计算机都是从0开始的，也就是默认进入第一个系统。当然，我们也只有这一个系统</p>
+<p><em>menuentry</em>指设置启动菜单，<em>My Operating System</em>是菜单名称，<em>multiboot &#x2F;boot&#x2F;mykernel.bin</em>是指其中的一个启动项</p>
+<p><strong>下面的<em>boot</em>不清楚是干什么的，暂时码住，以后有机会回来解释</strong></p>
+<p>运行结束后的grub.cfg内容如下所示：</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs routeros"><span class="hljs-built_in">set</span> <span class="hljs-attribute">timeout</span>=0<br><span class="hljs-built_in">set</span> <span class="hljs-attribute">default</span>=0<br><br>menuentry <span class="hljs-string">&quot;My Operating System&quot;</span> &#123;<br>	multiboot /boot/mykernel.bin<br>	boot<br>&#125;<br><br></code></pre></td></tr></table></figure>
 
-<h3 id="1-2、对linker-ld的补充"><a href="#1-2、对linker-ld的补充" class="headerlink" title="1.2、对linker.ld的补充"></a>1.2、对linker.ld的补充</h3><p>linker脚本是用来控制link过程的文件，文件中包含内容为linker的处理命令，主要用于描述输入文件到输出文件时各个内容的分步以及内存映射等</p>
-<figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><code class="hljs reasonml"><span class="hljs-constructor">ENTRY(<span class="hljs-params">loader</span>)</span><br><span class="hljs-constructor">OUTPUT_FORMAT(<span class="hljs-params">elf32</span>-<span class="hljs-params">i386</span>)</span><br><span class="hljs-constructor">OUTPUT_ARCH(<span class="hljs-params">i386</span>:<span class="hljs-params">i386</span>)</span><br><br>SECTIONS<br>&#123;<br>  . = <span class="hljs-number">0x0100000</span>;<br><br>  .text : <br>  &#123;<br>    *(.multiboot)<br>    *(.text*)<br>    *(.rodata)<br>  &#125;<br><br>  .data :<br>  &#123;<br>    start_ctors = .;<br>    <span class="hljs-constructor">KEEP(<span class="hljs-operator">*</span>( .<span class="hljs-params">init_array</span> )</span>);<br>    <span class="hljs-constructor">KEEP(<span class="hljs-operator">*</span>(SORT_BY_INIT_PRIORITY( .<span class="hljs-params">init_array</span>.<span class="hljs-operator">*</span> )</span>));<br>    end_ctors = .;<br><br>    *(.data)<br>  &#125;<br><br>  .bss :<br>  &#123;<br>    *(.bss)<br>  &#125;<br><br>  /DISCARD/ : <br>  &#123;<br>    *(.fini_array*)<br>    *(.comment)<br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>像看到这个文件内容则需要删除makefile的最后一句rm -rf iso，但是记得下一次编译的时候加上这句话并且先把iso文件夹删除掉</p>
+<p>最后<em>grub-mkrescue --output&#x3D;$@ iso</em>则是使用grub-mkrescue命令制作镜像文件，–output是指定输出文件，<strong>但是后面的iso我并不清楚是什么作用，如果是指定文件夹，那么生成的mykernel.iso会在&#x2F;iso中，但实际上是与&#x2F;iso同名文件夹，也不需要修改文件的后缀，甚至稍作修改也不会出现问题，此处码住，有待解决</strong></p>
+<p>最后的<em>rm -rf iso</em>就是删除无用的文件夹</p>
+<h2 id="2、打开mykernel-iso"><a href="#2、打开mykernel-iso" class="headerlink" title="2、打开mykernel.iso"></a>2、打开mykernel.iso</h2><p>激动人心的时刻到了，我们经过了三节的努力，终于可以看到一些成果了</p>
+<p>首先，本人使用的是virtualbox虚拟机安装的ubuntu 20.04系统，生成的iso镜像文件也在ubuntu系统中，想要再次使用虚拟机运行则需要将iso文件拷贝到windows系统中，这部分使用共享文件夹或者直接拖动即可，大家根据自身情况自行解决这个问题</p>
+<p>然后打开VirtualBox，选择新建</p>
+<p><img src="/2022/09/21/wyoos003/newVirtual.PNG" srcset="/img/loading.gif" lazyload alt="newVirtual"></p>
+<p>操作系统类型和版本要选择Other</p>
+<p>点击下一步之后打开虚拟机，然后选择设备-&gt;分配光驱-&gt;选择虚拟盘</p>
+<p><img src="/2022/09/21/wyoos003/open.png" srcset="/img/loading.gif" lazyload alt="open"></p>
+<p>然后将我们制作好的iso镜像添加进去，关闭虚拟机后再次开启即可。</p>
+<p>最后的运行效果如下：</p>
+<p><img src="/2022/09/21/wyoos003/result.png" srcset="/img/loading.gif" lazyload alt="result"></p>
+<h2 id="3、补充"><a href="#3、补充" class="headerlink" title="3、补充"></a>3、补充</h2><h3 id="3-1、timeout"><a href="#3-1、timeout" class="headerlink" title="3.1、timeout"></a>3.1、timeout</h3><p>大家也可以试试修改Makefile中的set timeout&#x3D;10，然后再运行看看结果</p>
+<h3 id="3-2、VirtualBox虚拟机中使用VirtualBox"><a href="#3-2、VirtualBox虚拟机中使用VirtualBox" class="headerlink" title="3.2、VirtualBox虚拟机中使用VirtualBox"></a>3.2、VirtualBox虚拟机中使用VirtualBox</h3><p>为了方便运行我们的结果，而不是来回调换系统运行调试，并且在参考视频的提示下，我们最终选择使用VIrtualBox虚拟机中再安装VirtualBox虚拟机</p>
+<p>首先我的ubuntu虚拟机配置 8192MB 显存 16MB</p>
+<p>在ubuntu中安装VirtualBox之前记得设置windows的VirtualBox中的<strong>启用嵌套VT-x&#x2F;AMD-V</strong></p>
+<p>具体设置方式如下：设置-&gt;系统-&gt;处理器-&gt;启用嵌套VT-x&#x2F;AMD-V</p>
+<p>如果<strong>启用嵌套VT-x&#x2F;AMD-V</strong>是灰色的，请参考<a target="_blank" rel="noopener" href="https://www.cnblogs.com/88223100/p/How_to_enable_Nested_VT-x_AMD-V_on_VirtualBox.html">链接</a></p>
+<p>然后虚拟机中安装VirtualBox</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs routeros">sudo apt-<span class="hljs-built_in">get</span> install VirtualBox<br></code></pre></td></tr></table></figure>
 
+<p>安装完毕之后打开VIrtualBox，然后和前面的流程相同，创建新的虚拟电脑，不添加镜像，启动虚拟电脑然后添加镜像，最后重启虚拟电脑即可。</p>
+<p>最后的最后，我们在Makefile中添加内容</p>
+<figure class="highlight autoit"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs autoit"><span class="hljs-built_in">run</span>: mykernel.iso<br>	(killall virtualboxvm &amp;&amp; <span class="hljs-built_in">sleep</span> <span class="hljs-number">1</span>) || <span class="hljs-literal">true</span><br>	virtualboxvm --startvm <span class="hljs-string">&quot;wyoos&quot;</span> &amp;<br></code></pre></td></tr></table></figure>
 
-
-<h4 id="1-2-1、首地址设置"><a href="#1-2-1、首地址设置" class="headerlink" title="1.2.1、首地址设置"></a>1.2.1、首地址设置</h4><p>首先是.SECTION{}中第一句*. &#x3D; 0x0100000;*</p>
-<p>这句话的意思是设置我们所要输出的文件的字段的起始地址，比如我们将地址设置为0x100000，则后面的.text段就从该地址开始放置，紧接着是.data段和.bss段，同样我们也可以使用如下方法：</p>
-<figure class="highlight asciidoc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs asciidoc"><span class="hljs-bullet">. </span>= 0x010000;<br><span class="hljs-title">.text : </span><br>&#123;<br>&#125;<br><span class="hljs-bullet">. </span>= 0x080000;<br><span class="hljs-title">.data :</span><br>&#123;<br>&#125;<br></code></pre></td></tr></table></figure>
-
-<p>将不同的段放置在不同的区域</p>
-<h4 id="1-2-2、data段的设置"><a href="#1-2-2、data段的设置" class="headerlink" title="1.2.2、data段的设置"></a>1.2.2、data段的设置</h4><p>接下来是.data段中的内容，ELF文件中对于.data段的描述是：<em>已初始化的全局和静态C变量</em></p>
-<p>在调用KernelMain方法之前，我们还需要的一个步骤就是保证初始化必要的全局变量，这些全局变量存放在**.init_array**段中。</p>
-<p>为了完成以上操作，我们还需要在Kernel.cpp中添加初始化函数<strong>callConstructors()<strong>，该函数获取</strong>.init_array</strong>段中的指令</p>
-<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs csharp"><span class="hljs-function">typedef <span class="hljs-title">void</span> (<span class="hljs-params">*constructor</span>)()</span>;<br><span class="hljs-keyword">extern</span> <span class="hljs-string">&quot;C&quot;</span> constructor start_ctors;<br><span class="hljs-keyword">extern</span> <span class="hljs-string">&quot;C&quot;</span> constructor end_ctors;<br><br><span class="hljs-keyword">extern</span> <span class="hljs-string">&quot;C&quot;</span> <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">callConstructors</span>()</span>&#123;<br>    <span class="hljs-keyword">for</span>(constructor* i = &amp;start_ctors; i != &amp;end_ctors; i++)&#123;<br>        (*i)();<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
-
-<p><strong>这里面其实我也不是很清楚内部的运行机制，暂时码住，以后遇到答案之后再回来做出解释</strong></p>
-<p><em>补充一：kernel.cpp中两个函数start_ctors与end_stors获取到linker.ld中的两个位置，然后执行linker.ld两个位置之间的命令（代码）</em></p>
-<p>还记得我们前面说过，在<strong>loader.s</strong>中需要暴漏<strong>KernelMain</strong>的地址让链接器知道吗？同理，我们也需要暴漏<strong>callConstructors</strong>的地址，也就是在<strong>loader.s</strong>中添加如下代码：</p>
-<figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs jboss-cli"><span class="hljs-string">.section</span> <span class="hljs-string">.text</span><br><span class="hljs-string">.extern</span> kernelMain<br><span class="hljs-string">.extern</span> callConstructors<br><span class="hljs-string">.global</span> loader<br></code></pre></td></tr></table></figure>
-
-<p>第三行代码为我们刚刚所添加的内容</p>
-<p>最后我们来看.data段中的内容，第一句与最后一句分别为start_ctors和end_ctors，这两部分是链接器指定的两个具体地址，然后将初始化指令，也就是.data段中的数据放置在这两段地址之间，也就是说链接器指定了一段空间用于存放.data段的数据，也就是**.init_array*<em>，前面提到过，</em>KEEP的作用是即使为引用符号，我们也要保留这部分*，另一种解释方法就是KEEP函数可以保证数据不被系统释放，属于对全局变量的保护，也可能是出于对程序生命周期的考虑。</p>
-<p><strong>SORT_BY_INIT_PRIORITY</strong>函数会对**.init_array**中的数据以升序的方式进行排序，然后再放置到输出文件中</p>
-<h4 id="1-2-3、-x2F-DISCARD-x2F"><a href="#1-2-3、-x2F-DISCARD-x2F" class="headerlink" title="1.2.3、&#x2F;DISCARD&#x2F;"></a>1.2.3、&#x2F;DISCARD&#x2F;</h4><p>放置在**&#x2F;DISCARD&#x2F;**段中的内容不会被链接器输出出去</p>
-<h3 id="1-3、printf函数"><a href="#1-3、printf函数" class="headerlink" title="1.3、printf函数"></a>1.3、printf函数</h3><p>还记得上一节中我们写的<strong>kernel.cpp</strong>文件吗，里面调用了printf函数进行打印，但是我们并没有引入头文件，结果可想而知，肯定无法编译过去，报错内容如下：<em>identifier “printf” is undefined</em></p>
-<p>printf函数本身就是调用操作系统的函数然后进行打印，所以我们不可以直接引入头文件进行编译，必须自己实现，实现的方法如下：</p>
-<figure class="highlight arduino"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs arduino"><span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">printf</span><span class="hljs-params">(<span class="hljs-type">const</span> <span class="hljs-type">char</span>* str)</span></span>&#123;<br>    <span class="hljs-type">unsigned</span> <span class="hljs-type">short</span> *VideoMemory = (<span class="hljs-type">unsigned</span> <span class="hljs-type">short</span>*)<span class="hljs-number">0xb8000</span>;<br>    <span class="hljs-keyword">for</span>(<span class="hljs-type">int</span> i=<span class="hljs-number">0</span>;str[i];i++)&#123;<br>        VideoMemory[i] = (VideoMemory[i] &amp; <span class="hljs-number">0xFF00</span>) | str[i];<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
-
-<p><a target="_blank" rel="noopener" href="https://wiki.osdev.org/Printing_To_Screen">0xb8000</a>是操作系统向屏幕写入数据的第一个地址，我们只需要将数据一次写入相应的地址，最后就能够打印出来</p>
-<p>根据<a target="_blank" rel="noopener" href="https://wiki.osdev.org/Printing_To_Screen">0xb8000</a>中的介绍，操作系统使用两个字节存储一个字符，第一个字节存储字符内容，第二个字节存储字符的颜色，我们这里不关心颜色，所以只需要将每一个低位字节置零之后将要写入的字符“与”进去即可。</p>
-<p>同时我们也需要注意大端和小端的问题！！！</p>
-<p>也就是<strong>VideoMemory[i] &#x3D; (VideoMemory[i] &amp; 0xFF00) | str[i];</strong></p>
-<h3 id="1-4、运行结果"><a href="#1-4、运行结果" class="headerlink" title="1.4、运行结果"></a>1.4、运行结果</h3><p>直接运行<strong>make mykernel.bin</strong>，可以得到如下的文件序列：</p>
-<p><img src="/2022/09/20/wyoos002/%E8%BF%90%E8%A1%8C%E7%BB%93%E6%9E%9C.PNG" srcset="/img/loading.gif" lazyload alt="运行结果"></p>
-<p>或者也可以分步运行：</p>
-<figure class="highlight gauss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs gauss"><span class="hljs-built_in">make</span> kernel.o<br><span class="hljs-built_in">make</span> loader.o<br><span class="hljs-built_in">make</span> mykernel.bin<br></code></pre></td></tr></table></figure>
-
-
-
-<h2 id="2、后记"><a href="#2、后记" class="headerlink" title="2、后记"></a>2、后记</h2><p>在看<a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1RX4y157CM?p=1&vd_source=71ff1308c23d0ef0791f945a3cc515e6">视频链接1</a>进行学习以及在网上查阅资料时发现了一处不太一样的地方，我们使用<em>objdump -d kernel.o</em>进行反汇编时可能会发现<strong>KernelMain</strong>等函数编译后的方法名称有可能变成**_KernelMain**，这就需要对loader.s以及linker.ld进行修改，修改的方法就是把反汇编的名称替换原来的名称，具体做法可以参照<a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1RX4y157CM?p=1&vd_source=71ff1308c23d0ef0791f945a3cc515e6">视频链接1</a>，但是我并没有遇到这个问题</p>
+<p>这样每次我们编译完成后只要执行<strong>make run</strong>即可</p>
 
                 
               </div>
@@ -369,8 +374,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>从零开始的操作系统生活02-对Hello World的补充</div>
-      <div>http://example.com/2022/09/20/wyoos002/</div>
+      <div>从零开始的操作系统生活03-镜像制作</div>
+      <div>http://example.com/2022/09/21/wyoos003/</div>
     </div>
     <div class="license-meta">
       
@@ -382,7 +387,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2022年9月20日</div>
+          <div>2022年9月21日</div>
         </div>
       
       
@@ -414,18 +419,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2022/09/21/wyoos003/" title="从零开始的操作系统生活03-镜像制作">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">从零开始的操作系统生活03-镜像制作</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2022/09/19/wyoos001/" title="从零开始的操作系统生活01-Hello World">
-                        <span class="hidden-mobile">从零开始的操作系统生活01-Hello World</span>
+                      <a href="/2022/09/20/wyoos002/" title="从零开始的操作系统生活02-对Hello World的补充">
+                        <span class="hidden-mobile">从零开始的操作系统生活02-对Hello World的补充</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
