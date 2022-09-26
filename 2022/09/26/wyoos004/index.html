@@ -1,0 +1,759 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/heizi.jpg">
+  <link rel="icon" href="/img/heizi.jpg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Anhongzhan">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="本节代码地址github 1、从实模式到保护模式实模式(Real mode)是x86处理器中的一种16位的寻址方式，但是x86处理器的物理地址有20位，为了实现20位的寻址，x86处理器采用了基地址(base)+偏移量(offset)的方法进行寻址，具体的寻址方式 base&lt;&lt; 4 + offset，寻址空间有$$2^{20}$$一共1MB的地址空间，这对于早期的处理器来说足够使用了，">
+<meta property="og:type" content="article">
+<meta property="og:title" content="从零开始的操作系统生活04-GDT">
+<meta property="og:url" content="http://example.com/2022/09/26/wyoos004/index.html">
+<meta property="og:site_name" content="Anhongzhan的个人博客">
+<meta property="og:description" content="本节代码地址github 1、从实模式到保护模式实模式(Real mode)是x86处理器中的一种16位的寻址方式，但是x86处理器的物理地址有20位，为了实现20位的寻址，x86处理器采用了基地址(base)+偏移量(offset)的方法进行寻址，具体的寻址方式 base&lt;&lt; 4 + offset，寻址空间有$$2^{20}$$一共1MB的地址空间，这对于早期的处理器来说足够使用了，">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/2022/09/26/wyoos004/GDTR.PNG">
+<meta property="og:image" content="http://example.com/2022/09/26/wyoos004/SegmentSelector.PNG">
+<meta property="og:image" content="http://example.com/2022/09/26/wyoos004/SegmentDescriptor.PNG">
+<meta property="article:published_time" content="2022-09-26T00:21:08.000Z">
+<meta property="article:modified_time" content="2022-09-26T00:24:27.840Z">
+<meta property="article:author" content="Anhongzhan">
+<meta property="article:tag" content="wyoos">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://example.com/2022/09/26/wyoos004/GDTR.PNG">
+  
+  
+  
+  <title>从零开始的操作系统生活04-GDT - Anhongzhan的个人博客</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.3","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":"BbzpSD646HVZnuxRhMFlM2Jl-gzGzoHsz","app_key":"e9mk1RwMxMrtPNfpsrBpvrUV","server_url":"https://bbzpsd64.lc-cn-n1-shared.com","path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+  
+
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>安宏展</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="从零开始的操作系统生活04-GDT"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2022-09-26 08:21" pubdate>
+          2022年9月26日 早上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          5.3k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          45 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="leancloud-page-views-container" class="post-meta" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="leancloud-page-views"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">从零开始的操作系统生活04-GDT</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p>本节代码地址<a target="_blank" rel="noopener" href="https://github.com/anhongzhan/wyoos/tree/master/004">github</a></p>
+<h2 id="1、从实模式到保护模式"><a href="#1、从实模式到保护模式" class="headerlink" title="1、从实模式到保护模式"></a>1、从实模式到保护模式</h2><p><a target="_blank" rel="noopener" href="https://wiki.osdev.org/Real_Mode">实模式(Real mode)</a>是x86处理器中的一种16位的寻址方式，但是x86处理器的物理地址有20位，为了实现20位的寻址，x86处理器采用了基地址(base)+偏移量(offset)的方法进行寻址，具体的寻址方式 base&lt;&lt; 4 + offset，寻址空间有$$2^{20}$$一共1MB的地址空间，这对于早期的处理器来说足够使用了，但随着技术的发展，逐渐出现了两个问题：</p>
+<ul>
+<li>地址空间逐渐不足</li>
+<li>非法访问内存问题</li>
+</ul>
+<p>地址空间不足问题很好理解，程序主键变得复杂，需要的空间会逐渐增加。对于非法访问内存，实模式下的内存访问方式可以访问任何一块内存，但是实际上很多内容比如内核代码和数据等是不允许访问或者修改的，所以就需要对内存进行规划，于是就出现了<a target="_blank" rel="noopener" href="https://wiki.osdev.org/Protected_Mode">保护模式(Protected Mode)</a>。</p>
+<p>保护模式采用32位的寻址方式，理论的寻址空间有4GB，这样就可以解决地址空间不足的问题。对于内存非法访问的问题，保护模式将内存划分为不同的段(Segment)，比如代码段、数据段、栈段等等，不同的段有不同的访问权限。保护模式下的寻址方式依旧采用基地址+偏移的方式，不过基地址的获取改成了通过GDT来获取，通过GDT就可以对内存访问进行限制，完美的解决非法访问内存问题。</p>
+<h2 id="2、访问GDT"><a href="#2、访问GDT" class="headerlink" title="2、访问GDT"></a>2、访问GDT</h2><p><a target="_blank" rel="noopener" href="https://wiki.osdev.org/GDT">Global Descriptor Table</a>，简称GDT，中文名为全局描述符表。</p>
+<p>首先，GDT是一项数据结构，从名称table就可以知道GDT是一张表，表中肯定存储很多数据，每条数据就是一个描述符(descriptor)。</p>
+<p>然后，这张表肯定要存储到某块内存，如何寻址到这块内存，就需要访问GDTR，R是register的意思，这个寄存器专门存储GDT表的内存地址以便访问。我们可以使用汇编语句lgdt对GDTR进行加载。</p>
+<p><img src="/2022/09/26/wyoos004/GDTR.PNG" srcset="/img/loading.gif" lazyload alt="GDTR"></p>
+<p>GDTR是一个48位的数据结构，高32位存储GDT的地址，低16位存储表的尺寸，记录了表的存储项，同时也规定了最大的表的数量</p>
+<p>其次，具体的访问方式。操作系统中指定下一条指令的寄存器为cs+eip，cs存储基地址，eip存储偏移。cs的访问方式转换为段选择子(Segment Selector)的访问方式：</p>
+<p><img src="/2022/09/26/wyoos004/SegmentSelector.PNG" srcset="/img/loading.gif" lazyload alt="SegmentSelector"></p>
+<p>cs是16位的寄存器，最低的两位RPL，全称是Requested Privilege Level，表示访问权限，用两位数据表示说明最多有4个访问权限。</p>
+<p>接下来的TI位表示需要访问GDT还是LDT，Index表示需要访问GDT的表项，即GDT中的第Index项。这样，通过访问GDT得到基地址即可。</p>
+<h2 id="3、柳暗花明，终于开始访问GDT了"><a href="#3、柳暗花明，终于开始访问GDT了" class="headerlink" title="3、柳暗花明，终于开始访问GDT了"></a>3、柳暗花明，终于开始访问GDT了</h2><p>GDT中的表项叫做段描述符(Segment Descriptor)，我们所访问的内容就是第Index个描述符，下面是描述符的数据结构：</p>
+<p><img src="/2022/09/26/wyoos004/SegmentDescriptor.PNG" srcset="/img/loading.gif" lazyload alt="SegmentDescriptor"></p>
+<p>段描述符是一个64位的数据结构，从具体的表项可以看出，我们可以拼出一个32位的基地址Base，这样就可以与偏移Offset结合得到访问地址。</p>
+<p>其他的表项内容请大家自行学习，而且是必须学会的，本人也在学习过程中，所以这里不做展开。</p>
+<h2 id="4、串联一下"><a href="#4、串联一下" class="headerlink" title="4、串联一下"></a>4、串联一下</h2><p>首先我们将GDT表填好并放在某块内存，通过lgdt指令设定GDTR，以便访问GDT。</p>
+<p>设定好cs+eip寄存器的内容，cs通过段选择子(Segment Selector)找出需要访问GDT的哪一项。</p>
+<p>然后我们根据GDTR找到相对应的段描述符(Segment Descriptor)，通过描述符的内容可以找出基地址(BASE)</p>
+<p>这里面基地址直接与偏移offset相加即可。</p>
+<p>这样我们就能跳转到下一条指令了。</p>
+<h2 id="5、该写代码了"><a href="#5、该写代码了" class="headerlink" title="5、该写代码了"></a>5、该写代码了</h2><p>新建文件<code>gdt.h</code>、<code>gdt.cpp</code>、<code>types.h</code></p>
+<p>首先是types.h，这里面主要将一些常用的数据结构设定为操作系统中常用的形式，内容如下：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-meta">#<span class="hljs-keyword">ifndef</span> __TYPES_H</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> __TYPES_H</span><br><br><span class="hljs-keyword">typedef</span> <span class="hljs-type">char</span> <span class="hljs-type">int8_t</span>;<br><span class="hljs-keyword">typedef</span> <span class="hljs-type">unsigned</span> <span class="hljs-type">char</span> <span class="hljs-type">uint8_t</span>;<br><br><span class="hljs-keyword">typedef</span> <span class="hljs-type">short</span> <span class="hljs-type">int16_t</span>;<br><span class="hljs-keyword">typedef</span> <span class="hljs-type">unsigned</span> <span class="hljs-type">short</span> <span class="hljs-type">uint16_t</span>;<br><br><span class="hljs-keyword">typedef</span> <span class="hljs-type">int</span> <span class="hljs-type">int32_t</span>;<br><span class="hljs-keyword">typedef</span> <span class="hljs-type">unsigned</span> <span class="hljs-type">int</span> <span class="hljs-type">uint32_t</span>;<br><br><span class="hljs-keyword">typedef</span> <span class="hljs-type">long</span> <span class="hljs-type">long</span> <span class="hljs-type">int</span> <span class="hljs-type">int64_t</span>;<br><span class="hljs-keyword">typedef</span> <span class="hljs-type">unsigned</span> <span class="hljs-type">long</span> <span class="hljs-type">long</span> <span class="hljs-type">int</span> <span class="hljs-type">uint64_t</span>;<br><br><span class="hljs-meta">#<span class="hljs-keyword">endif</span></span><br></code></pre></td></tr></table></figure>
+
+
+
+
+
+<p>然后是gdt.h</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-meta">#<span class="hljs-keyword">ifndef</span> __GDT_H</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> __GDT_H</span><br><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;types.h&quot;</span></span><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">GlobalDescriptorTable</span>&#123;<br><span class="hljs-keyword">public</span>:<br>  <span class="hljs-keyword">class</span> <span class="hljs-title class_">SegementDescriptor</span>&#123;<br>  <span class="hljs-keyword">public</span>:<br>    <span class="hljs-built_in">SegementDescriptor</span>(<span class="hljs-type">uint32_t</span> base, <span class="hljs-type">uint32_t</span> limit, <span class="hljs-type">uint8_t</span> type);<br><br>    <span class="hljs-function"><span class="hljs-type">uint32_t</span> <span class="hljs-title">Base</span><span class="hljs-params">()</span></span>;<br><br>    <span class="hljs-function"><span class="hljs-type">uint32_t</span> <span class="hljs-title">Limit</span><span class="hljs-params">()</span></span>;<br><br>  <span class="hljs-keyword">private</span>:<br>    <span class="hljs-type">uint16_t</span> limit_lo;<br>    <span class="hljs-type">uint16_t</span> base_lo;<br>    <span class="hljs-type">uint8_t</span> base_hi;<br>    <span class="hljs-type">uint8_t</span> type;<br>    <span class="hljs-type">uint8_t</span> flags_limit_hi;<br>    <span class="hljs-type">uint8_t</span> base_vhi;<br>  &#125; __attribute__((packed));<br><br>  SegementDescriptor nullSegmentDescriptor;<br>  SegementDescriptor unusedSegmentDescriptor;<br>  SegementDescriptor codeSegmentDescriptor;<br>  SegementDescriptor dataSegmentDescriptor;<br><br><span class="hljs-keyword">public</span>:<br>  <span class="hljs-built_in">GlobalDescriptorTable</span>();<br>  ~<span class="hljs-built_in">GlobalDescriptorTable</span>();<br><br>  <span class="hljs-function"><span class="hljs-type">uint16_t</span> <span class="hljs-title">CodeSegmentSelector</span><span class="hljs-params">()</span></span>;<br>  <span class="hljs-function"><span class="hljs-type">uint16_t</span> <span class="hljs-title">DataSegmentSelector</span><span class="hljs-params">()</span></span>;<br>&#125;;<br><br><br><span class="hljs-meta">#<span class="hljs-keyword">endif</span></span><br></code></pre></td></tr></table></figure>
+
+<p>GDT的基地址、limit以及type数据外部数据可能会访问，所以设定为public</p>
+<p>其他的位的数据则设定位private，<code>__attribute__((packed))</code>作用是告诉编译器取消结构在编译过程中的优化对齐，<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/30007037">内存对齐参考</a></p>
+<p>其他的还有一些空描述符（GDT的第0项就是空描述符），不可用描述符（暂时未接触到），数据段描述符、代码段描述符（这两部分可以参考S位以及type位的类型，就可以知道不同的段代表不同的内容）。</p>
+<p>接下来使用<code>gdt.cpp</code>进行实现</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;gdt.h&quot;</span></span><br><br>GlobalDescriptorTable::<span class="hljs-built_in">GlobalDescriptorTable</span>()<br>  : <span class="hljs-built_in">nullSegmentDescriptor</span>(<span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>),<br>  <span class="hljs-built_in">unusedSegmentDescriptor</span>(<span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>),<br>  <span class="hljs-built_in">codeSegmentDescriptor</span>(<span class="hljs-number">0</span>, <span class="hljs-number">64</span> * <span class="hljs-number">1024</span> * <span class="hljs-number">1024</span>, <span class="hljs-number">0x9a</span>),<br>  <span class="hljs-built_in">dataSegmentDescriptor</span>(<span class="hljs-number">0</span>, <span class="hljs-number">64</span> * <span class="hljs-number">1024</span> * <span class="hljs-number">1024</span>, <span class="hljs-number">0x92</span>)&#123;<br>    <span class="hljs-type">uint32_t</span> i[<span class="hljs-number">2</span>];<br>    i[<span class="hljs-number">1</span>] = (<span class="hljs-type">uint32_t</span>)<span class="hljs-keyword">this</span>;<br>    i[<span class="hljs-number">0</span>] = <span class="hljs-built_in">sizeof</span>(GlobalDescriptorTable) &lt;&lt; <span class="hljs-number">16</span>;<br>    <span class="hljs-function"><span class="hljs-keyword">asm</span> <span class="hljs-title">volatile</span><span class="hljs-params">(<span class="hljs-string">&quot;lgdt (%0)&quot;</span>: :<span class="hljs-string">&quot;p&quot;</span> (((<span class="hljs-type">uint8_t</span> *)i) + <span class="hljs-number">2</span>))</span></span>;<br>&#125;<br><br>GlobalDescriptorTable::~<span class="hljs-built_in">GlobalDescriptorTable</span>() &#123;&#125;<br><br><span class="hljs-function"><span class="hljs-type">uint16_t</span> <span class="hljs-title">GlobalDescriptorTable::DataSegmentDescriptor</span><span class="hljs-params">()</span> </span>&#123;<br>  <span class="hljs-keyword">return</span> (<span class="hljs-type">uint8_t</span>*)&amp;dataSegmentDescriptor - (<span class="hljs-type">uint8_t</span>*)<span class="hljs-keyword">this</span>;<br>&#125;<br><br><span class="hljs-function"><span class="hljs-type">uint16_t</span> <span class="hljs-title">GlobalDescriptorTable::CodeSegmentDescriptor</span><span class="hljs-params">()</span></span>&#123;<br>  <span class="hljs-keyword">return</span> (<span class="hljs-type">uint8_t</span>*)&amp;codeSegmentDescriptor - (<span class="hljs-type">uint8_t</span>*)<span class="hljs-keyword">this</span>;<br>&#125;<br><br>GlobalDescriptorTable::SegementDescriptor::<span class="hljs-built_in">SegementDescriptor</span>(<span class="hljs-type">uint32_t</span> base, <span class="hljs-type">uint32_t</span> limit, <span class="hljs-type">uint8_t</span> type)&#123;<br>  <span class="hljs-type">uint8_t</span>* target = (<span class="hljs-type">uint8_t</span>*)<span class="hljs-keyword">this</span>;<br><br>  <span class="hljs-keyword">if</span>(limit &lt; <span class="hljs-number">65536</span>)&#123;<br>    target[<span class="hljs-number">6</span>] = <span class="hljs-number">0x40</span>;<br>  &#125;<span class="hljs-keyword">else</span>&#123;<br>    <span class="hljs-keyword">if</span>((limit &amp; <span class="hljs-number">0xfff</span>) != <span class="hljs-number">0xfff</span>)&#123;<br>      limit = (limit &gt;&gt; <span class="hljs-number">12</span>) - <span class="hljs-number">1</span>;<br>    &#125;<span class="hljs-keyword">else</span>&#123;<br>      limit = limit &gt;&gt; <span class="hljs-number">12</span>;<br>    &#125;<br>    target[<span class="hljs-number">6</span>] = <span class="hljs-number">0xC0</span>;<br>  &#125;<br><br>  <span class="hljs-comment">//limit</span><br>  target[<span class="hljs-number">0</span>] = limit &amp; <span class="hljs-number">0xff</span>;<br>  target[<span class="hljs-number">1</span>] = (limit &gt;&gt; <span class="hljs-number">8</span>) &amp; <span class="hljs-number">0xff</span>;<br>  target[<span class="hljs-number">6</span>] = (limit &gt;&gt; <span class="hljs-number">16</span>) &amp; <span class="hljs-number">0xf</span>;<br><br>  <span class="hljs-comment">//base</span><br>  target[<span class="hljs-number">2</span>] = base &amp; <span class="hljs-number">0xff</span>;<br>  target[<span class="hljs-number">3</span>] = (base &gt;&gt; <span class="hljs-number">8</span>) &amp; <span class="hljs-number">0xff</span>;<br>  target[<span class="hljs-number">4</span>] = (base &gt;&gt; <span class="hljs-number">16</span>) &amp; <span class="hljs-number">0xff</span>;<br>  target[<span class="hljs-number">7</span>] = (base &gt;&gt; <span class="hljs-number">24</span>) &amp; <span class="hljs-number">0xff</span>;<br><br>  <span class="hljs-comment">//type</span><br>  target[<span class="hljs-number">5</span>] = type;<br>&#125;<br><br><span class="hljs-type">uint32_t</span> GlobalDescriptorTable::SegementDescriptor::<span class="hljs-built_in">Base</span>()&#123;<br>  <span class="hljs-type">uint8_t</span>* target = (<span class="hljs-type">uint8_t</span>*)<span class="hljs-keyword">this</span>;<br>  <span class="hljs-type">uint32_t</span> result = target[<span class="hljs-number">7</span>];<br>  result = (result &lt;&lt; <span class="hljs-number">8</span>) + target[<span class="hljs-number">4</span>];<br>  result = (result &lt;&lt; <span class="hljs-number">8</span>) + target[<span class="hljs-number">3</span>];<br>  result = (result &lt;&lt; <span class="hljs-number">8</span>) + target[<span class="hljs-number">2</span>];<br>  <span class="hljs-keyword">return</span> result;<br>&#125;<br><br><span class="hljs-type">uint32_t</span> GlobalDescriptorTable::SegementDescriptor::<span class="hljs-built_in">Limit</span>()&#123;<br>  <span class="hljs-type">uint8_t</span>* target = (<span class="hljs-type">uint8_t</span>*)<span class="hljs-keyword">this</span>;<br>  <span class="hljs-type">uint32_t</span> result = target[<span class="hljs-number">6</span>] &amp; <span class="hljs-number">0xf</span>;<br>  result = (result &lt;&lt; <span class="hljs-number">8</span>) + target[<span class="hljs-number">1</span>];<br>  result = (result &lt;&lt; <span class="hljs-number">8</span>) + target[<span class="hljs-number">0</span>];<br><br>  <span class="hljs-keyword">if</span>((target[<span class="hljs-number">6</span>] &amp; <span class="hljs-number">0xC0</span>) == <span class="hljs-number">0xC0</span>)&#123;<br>    result = (result &lt;&lt; <span class="hljs-number">12</span>) | <span class="hljs-number">0xfff</span>;<br>  &#125;<br><br>  <span class="hljs-keyword">return</span> result;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+<p>可以看到，下面的部分是在设定GDTR，GDTR前32位表示GDT的基地址，后16位代表GDT中表项的内容</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-type">uint32_t</span> i[<span class="hljs-number">2</span>];<br>i[<span class="hljs-number">1</span>] = (<span class="hljs-type">uint32_t</span>)<span class="hljs-keyword">this</span>;<br>i[<span class="hljs-number">0</span>] = <span class="hljs-built_in">sizeof</span>(GlobalDescriptorTable) &lt;&lt; <span class="hljs-number">16</span>;<br><span class="hljs-function"><span class="hljs-keyword">asm</span> <span class="hljs-title">volatile</span><span class="hljs-params">(<span class="hljs-string">&quot;lgdt (%0)&quot;</span>: :<span class="hljs-string">&quot;p&quot;</span> (((<span class="hljs-type">uint8_t</span> *)i) + <span class="hljs-number">2</span>))</span></span>;<br></code></pre></td></tr></table></figure>
+
+
+
+<p><code>asm</code>是cpp中使用汇编语句，<code>volatile</code>是防止汇编语句被编译器优化掉，内嵌汇编的具体格式为：</p>
+<p>(“指令列表”:”输出列表”:”输入列表”:”破坏描述部分”);注意，括号中的冒号缺一不可，没有输入或者输出可以空着</p>
+<p><code>%0 %1</code>代表出现的第一个第二个寄存器名，<code>p</code>表示下面的操作数是一个合法的地址。</p>
+<p>下面的函数都是通过GDT表的具体表项，将需要的数据拼接出来，比如<code>Base()</code>函数就是将段描述符中的三部分拼接到一起得到的。</p>
+<p>其他的内容也是如此，段描述符函数<code>SegementDescriptor</code>需要参考段描述符每一位代表的内容，所以需要进行判断是否大于65536等内容。</p>
+<h2 id="6、还有Makefile"><a href="#6、还有Makefile" class="headerlink" title="6、还有Makefile"></a>6、还有Makefile</h2><figure class="highlight abnf"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs abnf"><span class="hljs-attribute">objects</span> <span class="hljs-operator">=</span> loader.o kernel.o gdt.o<br></code></pre></td></tr></table></figure>
+
+<p>在objects后面增加gdt.o即可，然后进行编译即可、</p>
+<h2 id="7、运行结果"><a href="#7、运行结果" class="headerlink" title="7、运行结果"></a>7、运行结果</h2><p>由于我们只是将GDT建立起来而没有使用，所以运行结果不会有任何区别，只要不报错就算成功！</p>
+<h2 id="8、补充"><a href="#8、补充" class="headerlink" title="8、补充"></a>8、补充</h2><p>从实模式到保护模式是操作系统中非常精彩的内容，请大家多查阅一些资料学习一下！</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/wyoos/">#wyoos</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>从零开始的操作系统生活04-GDT</div>
+      <div>http://example.com/2022/09/26/wyoos004/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Anhongzhan</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2022年9月26日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/09/21/wyoos003/" title="从零开始的操作系统生活03-镜像制作">
+                        <span class="hidden-mobile">从零开始的操作系统生活03-镜像制作</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  <article id="comments" lazyload>
+    
+  <div id="valine"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#valine', function() {
+      Fluid.utils.createScript('https://lib.baomitu.com/valine/1.5.1/Valine.min.js', function() {
+        var options = Object.assign(
+          {"appId":"BbzpSD646HVZnuxRhMFlM2Jl-gzGzoHsz","appKey":"e9mk1RwMxMrtPNfpsrBpvrUV","path":"window.location.pathname","placeholder":null,"avatar":"retro","meta":["nick","mail","link"],"requiredFields":[],"pageSize":10,"lang":"zh-CN","highlight":false,"recordIP":false,"serverURLs":"","emojiCDN":null,"emojiMaps":null,"enableQQ":false},
+          {
+            el: "#valine",
+            path: window.location.pathname
+          }
+        )
+        new Valine(options);
+        Fluid.utils.waitElementVisible('#valine .vcontent', () => {
+          var imgSelector = '#valine .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+  </article>
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="leancloud-site-pv-container" style="display: none">
+        总访问量 
+        <span id="leancloud-site-pv"></span>
+         次
+      </span>
+    
+    
+      <span id="leancloud-site-uv-container" style="display: none">
+        总访客数 
+        <span id="leancloud-site-uv"></span>
+         次
+      </span>
+    
+    
+
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script defer src="/js/leancloud.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
