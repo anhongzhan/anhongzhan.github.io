@@ -26,6 +26,7 @@
 <meta property="og:image" content="http://example.com/2022/10/06/wyoos006/GateDescriptor.PNG">
 <meta property="og:image" content="http://example.com/2022/10/06/wyoos006/TaskGate.png">
 <meta property="og:image" content="http://example.com/2022/10/06/wyoos006/InterruptGate.jpg">
+<meta property="og:image" content="http://example.com/2022/10/06/wyoos006/TrapGate.jpg">
 <meta property="og:image" content="http://example.com/2022/10/06/wyoos006/CallGate.jpg">
 <meta property="og:image" content="http://example.com/2022/10/06/wyoos006/IDTR.PNG">
 <meta property="og:image" content="http://example.com/2022/10/06/wyoos006/8259A.gif">
@@ -39,9 +40,9 @@
 <meta property="og:image" content="http://example.com/2022/10/06/wyoos006/ICW4Simple.PNG">
 <meta property="og:image" content="http://example.com/2022/10/06/wyoos006/OCW1.PNG">
 <meta property="og:image" content="http://example.com/2022/10/06/wyoos006/OCW2.PNG">
-<meta property="og:image" content="f:\wyoos\006\OCW2Table.PNG">
+<meta property="og:image" content="http://example.com/2022/10/06/wyoos006/OCW2Table.PNG">
 <meta property="article:published_time" content="2022-10-06T12:13:42.000Z">
-<meta property="article:modified_time" content="2022-10-06T12:16:26.075Z">
+<meta property="article:modified_time" content="2022-10-06T13:00:37.842Z">
 <meta property="article:author" content="Anhongzhan">
 <meta property="article:tag" content="wyoos">
 <meta name="twitter:card" content="summary_large_image">
@@ -265,7 +266,7 @@
         
         
         
-          171 分钟
+          170 分钟
         
       </span>
     
@@ -345,7 +346,7 @@
 <p>中断门：</p>
 <p><img src="/2022/10/06/wyoos006/InterruptGate.jpg" srcset="/img/loading.gif" lazyload alt="InterruptGate"></p>
 <p>陷阱门：</p>
-<p>![TrapGate]TrapGate.jpg)</p>
+<p><img src="/2022/10/06/wyoos006/TrapGate.jpg" srcset="/img/loading.gif" lazyload alt="TrapGate"></p>
 <p>调用门：</p>
 <p><img src="/2022/10/06/wyoos006/CallGate.jpg" srcset="/img/loading.gif" lazyload alt="CallGate"></p>
 <p>可以看到，每种门的<code>TYPE</code>字段是不同的。另一个不同点是，任务们选择子字段是TSS选择子。TSS(Task Status Segment)是Intel处理器中提供任务切换机制时使用的数据结构。由于我们本次实现的操作系统不涉及TSS，所以这里不做展开讲述。</p>
@@ -513,7 +514,7 @@
 <p>这就使用到了OCW2</p>
 <p><img src="/2022/10/06/wyoos006/OCW2.PNG" srcset="/img/loading.gif" lazyload alt="OCW2"></p>
 <p>这里是具体OCW2各位表示的内容</p>
-<p><img src="F:\wyoos\006\OCW2Table.PNG" srcset="/img/loading.gif" lazyload alt="OCW2Table"></p>
+<p><img src="/2022/10/06/wyoos006/OCW2Table.PNG" srcset="/img/loading.gif" lazyload alt="OCW2Table"></p>
 <p>Linux-0.11 内核仅使用该操作命令字在中断处理过程结束之前向 8259A 发送结束中断（EOI）命令。所使用的OCW2 值为 0x20，表示固定优先级、一般EOI（对应上表的第一行）。</p>
 <p>也就是DoHandleInterrupt中的</p>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs cpp"> picMasterCommand.<span class="hljs-built_in">Write</span>(<span class="hljs-number">0x20</span>);<br><span class="hljs-keyword">if</span>(hardwareInterruptOffset + <span class="hljs-number">8</span> &lt;= InterruptNumber)&#123;<br>      picSlaveCommand.<span class="hljs-built_in">Write</span>(<span class="hljs-number">0x20</span>);<br>&#125;<br></code></pre></td></tr></table></figure>
