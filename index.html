@@ -240,6 +240,286 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
+        <a href="/2022/10/26/cppnote07/" target="_self">
+          从C开始的CPP学习生活07-模板
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2022/10/26/cppnote07/" target="_self">
+        <div>
+          1、函数模板1.1、定义通过函数重载，实现同名函数，根据不同的参数类型，进行智能调用 123456789void fun(int a)&#123;	std::cout &lt;&lt; a &lt;&lt; std::endl;&#125;void fun(double d)&#123;	std::cout &lt;&lt; d &lt;&lt; std::endl;&#125;  通过上面的方法
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2022-10-26 16:48" pubdate>
+              2022-10-26
+            </time>
+          </div>
+        
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/cpp/">#cpp</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2022/10/26/cppnote06/" target="_self">
+          从C开始的CPP学习生活06-类型转换
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2022/10/26/cppnote06/" target="_self">
+        <div>
+          1、旧式类型转换12(type)value;type(value); //C++特有    2、新式类型转换新式类型转换针对不同的场景使用不同的转换方式，相较于就是转换的有点是安全  static_cast const_cast dynamic_cast reinterpret_cast  2.1、static_caststatic_cast明确告知编译器我们要进行类型转化， 可以使用static
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2022-10-26 16:48" pubdate>
+              2022-10-26
+            </time>
+          </div>
+        
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/cpp/">#cpp</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2022/10/26/cppnote05/" target="_self">
+          从C开始的CPP学习生活05-内部类
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2022/10/26/cppnote05/" target="_self">
+        <div>
+          1、定义如果一个类定义在另一个类的内部，这个类就叫做内部类； 内部类虽然定义在外部类中，但并不属于外部类，外部类对内部类没有任何优越的访问权限； 内部类相当于外部类的友元类+内部类可以直接访问外部类中的static、枚举成员 注意：友元类的定义是内部类可以通过外部类的对象来访问外部类的所有成员 2、使用所以观察以下代码： 1234567891011121314151617class OUT&#12
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2022-10-26 16:47" pubdate>
+              2022-10-26
+            </time>
+          </div>
+        
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/cpp/">#cpp</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2022/10/26/cppnote04/" target="_self">
+          从C开始的CPP学习生活04-多态与虚函数
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2022/10/26/cppnote04/" target="_self">
+        <div>
+          多态是一种泛型编程思想，虚函数是实现这个思想的语法基础，即父类的指针调用子类的函数 1、虚函数1234567891011121314151617181920212223242526class CFather&#123;public:	virtual void show()	&#123;		std::cout &lt;&lt; &quot;class Father&quot; &lt;&lt; st
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2022-10-26 16:47" pubdate>
+              2022-10-26
+            </time>
+          </div>
+        
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/cpp/">#cpp</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2022/10/26/cppnote03/" target="_self">
+          从C开始的CPP学习生活03-继承
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2022/10/26/cppnote03/" target="_self">
+        <div>
+          1234567891011121314151617181920212223242526272829303132333435class CPeople //基类（父类）&#123;public:	void Study()	&#123;		std::cout &lt;&lt; &quot;Study&quot; &lt;&lt; std::endl;	&#125;&#125;;class CChild
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2022-10-26 16:45" pubdate>
+              2022-10-26
+            </time>
+          </div>
+        
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/cpp/">#cpp</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2022/10/26/cppnote02/" target="_self">
+          从C开始的CPP学习生活02-operator
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2022/10/26/cppnote02/" target="_self">
+        <div>
+          C++运算符 123456789101112131415161718192021222324class CStu&#123;public:	int nAge;	double dScore;	CStu()	&#123;		nAge = 12;		dScore = 16.23;	&#125;&#125;;void operator+(CStu&amp; st, int a)&#123;	std::co
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2022-10-26 16:44" pubdate>
+              2022-10-26
+            </time>
+          </div>
+        
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/cpp/">#cpp</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2022/10/26/cppnote01/" target="_self">
+          从C开始的CPP学习生活01-基础内容
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2022/10/26/cppnote01/" target="_self">
+        <div>
+          0、写在前面本笔记为学习cpp过程中记录的一些知识，并不全面，也并不一定完全正确 参考视频教程：bilibili 代码测试环境：win10 + vs2017 1、换行endl换行并清空并刷新缓冲区 \n只进行换行 2、newdelete和mallocfree的区别new和delete会触发构造函数和析构函数 malloc和free不会 3、引用3.1、引用是给我们的变量起别名12345int a
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2022-10-26 16:41" pubdate>
+              2022-10-26
+            </time>
+          </div>
+        
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/cpp/">#cpp</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
         <a href="/2022/10/06/wyoos006/" target="_self">
           从零开始的操作系统生活06-interrupt
         </a>
@@ -354,160 +634,13 @@
     </article>
   </div>
 
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2022/09/21/wyoos003/" target="_self">
-          从零开始的操作系统生活03-镜像制作
-        </a>
-      </h1>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2022/09/21/wyoos003/" target="_self">
-        <div>
-          0、环境配置安装grub-legacy与xorriso，最后我们会将制作好的镜像放入虚拟机中运行，而不是在虚拟机中再安装一个虚拟机运行 但是安装grub-legacy时会发现报错了，原因应该是因为版本迭代问题导致的，最新的安装包名称应该是grub-efi-amd64 1sudo apt-get install grub-efi-amd64 xorriso  github 1、mykernel.is
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2022-09-21 16:45" pubdate>
-              2022-09-21
-            </time>
-          </div>
-        
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/wyoos/">#wyoos</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2022/09/20/wyoos002/" target="_self">
-          从零开始的操作系统生活02-对Hello World的补充
-        </a>
-      </h1>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2022/09/20/wyoos002/" target="_self">
-        <div>
-          1、开始github 1.1、环境配置1sudo apt-get install g++ binutils libc6-dev-i386    1.2、对linker.ld的补充linker脚本是用来控制link过程的文件，文件中包含内容为linker的处理命令，主要用于描述输入文件到输出文件时各个内容的分步以及内存映射等 1234567891011121314151617181920212223
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2022-09-20 10:51" pubdate>
-              2022-09-20
-            </time>
-          </div>
-        
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/wyoos/">#wyoos</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2022/09/19/wyoos001/" target="_self">
-          从零开始的操作系统生活01-Hello World
-        </a>
-      </h1>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2022/09/19/wyoos001/" target="_self">
-        <div>
-          0、目标使用cpp开发一个操作系统，具体能走到哪一步看毅力，加油！ 1、参考内容视频链接1 视频链接2 github 2、开始操作系统是一组主管并控制计算机操作、运用和运行硬件、软件资源和提供公共服务来组织用户交互的相互关联的系统软件程序 首先观察我们简单的操作系统的目录  kernel.cpp是我们操作系统的运行程序，loader.s负责把我们的操作系统加载到硬件中运行，linker.ld负责将
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2022-09-19 15:56" pubdate>
-              2022-09-19
-            </time>
-          </div>
-        
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/wyoos/">#wyoos</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2022/09/19/hello-world/" target="_self">
-          Hello World
-        </a>
-      </h1>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2022/09/19/hello-world/" target="_self">
-        <div>
-          Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub. Quick
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2022-09-19 15:16" pubdate>
-              2022-09-19
-            </time>
-          </div>
-        
-        
-        
-      </div>
-    </article>
-  </div>
 
 
+  <nav aria-label="navigation">
+    <span class="pagination" id="pagination">
+      <span class="page-number current">1</span><a class="page-number" href="/page/2/#board">2</a><a class="extend next" rel="next" href="/page/2/#board"><i class="iconfont icon-arrowright"></i></a>
+    </span>
+  </nav>
 
 
 
